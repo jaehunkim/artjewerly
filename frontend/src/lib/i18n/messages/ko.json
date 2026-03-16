@@ -1,0 +1,39 @@
+{
+  "nav": {
+    "artJewelry": "아트 주얼리",
+    "shop": "판매용 주얼리",
+    "info": "INFO"
+  },
+  "common": {
+    "buyNow": "구매하기",
+    "language": "EN",
+    "home": "홈",
+    "loading": "로딩 중...",
+    "error": "오류가 발생했습니다"
+  },
+  "checkout": {
+    "title": "주문하기",
+    "email": "이메일",
+    "name": "이름",
+    "phone": "전화번호",
+    "address": "주소",
+    "detailAddress": "상세주소",
+    "zipcode": "우편번호",
+    "pay": "결제하기",
+    "orderSummary": "주문 요약"
+  },
+  "order": {
+    "confirmation": "주문 완료",
+    "thankYou": "감사합니다!",
+    "orderNumber": "주문번호",
+    "status": "결제 상태"
+  },
+  "info": {
+    "title": "정보",
+    "contact": "연락처"
+  },
+  "currency": {
+    "krw": "원",
+    "format": "{amount}원"
+  }
+}

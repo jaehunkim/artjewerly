@@ -1,0 +1,19 @@
+# GCP
+gcp_project_id = "your-gcp-project-id"
+gcp_region     = "asia-northeast3"  # Seoul
+
+# Cloudflare
+cloudflare_api_token  = "your-cf-api-token"
+cloudflare_account_id = "your-cf-account-id"
+cloudflare_zone_id    = ""  # Optional: for custom domain
+
+# Neon
+neon_api_key = "your-neon-api-key"
+
+# App
+app_name       = "heeang-jewelry"
+admin_password = "changeme-in-production"
+
+# Payment (optional for MVP)
+stripe_secret_key = ""
+toss_secret_key   = ""

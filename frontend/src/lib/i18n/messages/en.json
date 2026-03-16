@@ -1,0 +1,39 @@
+{
+  "nav": {
+    "artJewelry": "Art Jewelry",
+    "shop": "Shop",
+    "info": "INFO"
+  },
+  "common": {
+    "buyNow": "Buy Now",
+    "language": "KR",
+    "home": "Home",
+    "loading": "Loading...",
+    "error": "An error occurred"
+  },
+  "checkout": {
+    "title": "Checkout",
+    "email": "Email",
+    "name": "Full Name",
+    "phone": "Phone",
+    "address": "Address",
+    "detailAddress": "Address Line 2",
+    "zipcode": "Zip Code",
+    "pay": "Pay Now",
+    "orderSummary": "Order Summary"
+  },
+  "order": {
+    "confirmation": "Order Confirmed",
+    "thankYou": "Thank you!",
+    "orderNumber": "Order Number",
+    "status": "Payment Status"
+  },
+  "info": {
+    "title": "About",
+    "contact": "Contact"
+  },
+  "currency": {
+    "usd": "USD",
+    "format": "${amount}"
+  }
+}
