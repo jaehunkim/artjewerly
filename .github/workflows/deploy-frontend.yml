@@ -1,13 +1,17 @@
-name: Deploy Frontend
+name: Frontend CI
 
 on:
   push:
     branches: [main]
     paths:
       - 'frontend/**'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'frontend/**'
 
 jobs:
-  deploy:
+  test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -21,18 +25,11 @@ jobs:
       - name: Install dependencies
         run: cd frontend && npm ci
 
+      - name: Lint
+        run: cd frontend && npm run lint
+
+      - name: Test
+        run: cd frontend && npx vitest run
+
       - name: Build
         run: cd frontend && npm run build
-        env:
-          NEXT_PUBLIC_API_URL: ${{ vars.API_URL }}
-          NEXT_PUBLIC_R2_PUBLIC_URL: ${{ vars.R2_PUBLIC_URL }}
-          NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: ${{ vars.STRIPE_PUBLISHABLE_KEY }}
-          NEXT_PUBLIC_TOSS_CLIENT_KEY: ${{ vars.TOSS_CLIENT_KEY }}
-
-      - name: Deploy to Cloudflare Pages
-        uses: cloudflare/wrangler-action@v3
-        with:
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          workingDirectory: frontend
-          command: pages deploy .vercel/output/static --project-name=heeang-jewelry

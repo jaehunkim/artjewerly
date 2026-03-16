@@ -1,42 +1,31 @@
-name: Deploy Backend
+name: Backend CI
 
 on:
   push:
     branches: [main]
     paths:
       - 'backend/**'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'backend/**'
 
 jobs:
-  deploy:
+  test:
     runs-on: ubuntu-latest
-
-    permissions:
-      contents: read
-      id-token: write
-
     steps:
       - uses: actions/checkout@v4
 
-      - id: auth
-        uses: google-github-actions/auth@v2
+      - uses: actions/setup-go@v5
         with:
-          workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
-          service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
+          go-version: '1.24'
+          cache-dependency-path: backend/go.sum
 
-      - uses: google-github-actions/setup-gcloud@v2
+      - name: Vet
+        run: cd backend && go vet ./...
 
-      - name: Configure Docker
-        run: gcloud auth configure-docker ${{ vars.GCP_REGION }}-docker.pkg.dev
+      - name: Test
+        run: cd backend && go test ./... -v -count=1
 
-      - name: Build and Push
-        run: |
-          cd backend
-          docker build -t ${{ vars.GCP_REGION }}-docker.pkg.dev/${{ vars.GCP_PROJECT_ID }}/heeang-jewelry-api/api:${{ github.sha }} .
-          docker push ${{ vars.GCP_REGION }}-docker.pkg.dev/${{ vars.GCP_PROJECT_ID }}/heeang-jewelry-api/api:${{ github.sha }}
-
-      - name: Deploy to Cloud Run
-        run: |
-          gcloud run deploy heeang-jewelry-api \
-            --image ${{ vars.GCP_REGION }}-docker.pkg.dev/${{ vars.GCP_PROJECT_ID }}/heeang-jewelry-api/api:${{ github.sha }} \
-            --region ${{ vars.GCP_REGION }} \
-            --allow-unauthenticated
+      - name: Build
+        run: cd backend && CGO_ENABLED=0 go build -o /dev/null ./cmd/server
