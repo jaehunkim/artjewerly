@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"context"
 	"encoding/json"
 	"net/http"
 
@@ -9,8 +10,13 @@ import (
 	"github.com/jaehunkim/heeang-api/internal/service"
 )
 
+type contentServicer interface {
+	Get(ctx context.Context, page string) (*model.SiteContent, error)
+	Update(ctx context.Context, page string, req *model.UpdateContentRequest) (*model.SiteContent, error)
+}
+
 type ContentHandler struct {
-	svc *service.ContentService
+	svc contentServicer
 }
 
 func NewContentHandler(svc *service.ContentService) *ContentHandler {

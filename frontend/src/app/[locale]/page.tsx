@@ -12,23 +12,23 @@ export default async function HomePage({ params }: HomePageProps) {
 
   return (
     <PageTransition>
-      <div className="relative flex flex-col items-center justify-center min-h-screen overflow-hidden">
-        {/* Background image — full bleed */}
-        <div className="absolute inset-0 z-0">
-          <img
-            src="https://picsum.photos/seed/heeang-hero/1600/2000"
-            srcSet="https://picsum.photos/seed/heeang-hero/800/1000 800w, https://picsum.photos/seed/heeang-hero/1600/2000 1600w"
-            sizes="100vw"
-            alt=""
-            aria-hidden="true"
-            className="w-full h-full object-cover"
-          />
-          {/* Subtle dark scrim so text reads */}
-          <div className="absolute inset-0 bg-ink/20" />
-        </div>
+      <div className="relative flex flex-col items-center justify-center min-h-screen overflow-hidden bg-ink">
+        {/* Background image — full bleed, CSS background as fallback */}
+        <div
+          className="absolute inset-0 z-0 bg-center bg-cover"
+          style={{
+            backgroundImage: `url('https://picsum.photos/seed/heeang-hero/1600/2000')`,
+            backgroundPosition: 'center center',
+            backgroundSize: 'cover',
+          }}
+          aria-hidden="true"
+        />
+
+        {/* Subtle dark scrim so text reads */}
+        <div className="absolute inset-0 z-0 bg-ink/30" />
 
         {/* Center lockup */}
-        <div className="relative z-10 text-center text-cream">
+        <div className="relative z-10 text-center text-cream px-6">
           <h1 className="font-heading text-6xl md:text-8xl lg:text-9xl font-light tracking-[0.25em] mb-3">
             HEEANG
           </h1>
@@ -37,7 +37,7 @@ export default async function HomePage({ params }: HomePageProps) {
           </p>
           <Link
             href="/art"
-            className="font-body text-xs tracking-[0.3em] uppercase border-b border-cream/60 pb-0.5 hover:border-cream transition-colors duration-300"
+            className="font-body text-xs tracking-[0.3em] uppercase border-b border-cream/60 pb-0.5 hover:border-cream transition-colors duration-300 text-cream"
           >
             {locale === 'en' ? 'Explore' : '둘러보기'}
           </Link>

@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"context"
 	"encoding/json"
 	"net/http"
 
@@ -9,8 +10,16 @@ import (
 	"github.com/jaehunkim/heeang-api/internal/service"
 )
 
+type productServicer interface {
+	List(ctx context.Context, category string) ([]model.Product, error)
+	Get(ctx context.Context, id string) (*model.Product, error)
+	Create(ctx context.Context, req *model.CreateProductRequest) (*model.Product, error)
+	Update(ctx context.Context, id string, req *model.UpdateProductRequest) (*model.Product, error)
+	Delete(ctx context.Context, id string) error
+}
+
 type ProductHandler struct {
-	svc *service.ProductService
+	svc productServicer
 }
 
 func NewProductHandler(svc *service.ProductService) *ProductHandler {

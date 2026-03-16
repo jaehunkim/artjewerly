@@ -4,6 +4,7 @@ import { getMessages } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import { routing } from '@/lib/i18n/routing';
 import { Sidebar } from '@/components/layout/Sidebar';
+import { fontVariables } from '@/app/layout';
 
 const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://heeang.com';
 
@@ -57,7 +58,7 @@ export default async function LocaleLayout({
   const messages = await getMessages();
 
   return (
-    <html lang={locale}>
+    <html lang={locale} className={fontVariables}>
       <body className="bg-cream text-ink">
         <NextIntlClientProvider messages={messages}>
           <div className="flex min-h-screen">

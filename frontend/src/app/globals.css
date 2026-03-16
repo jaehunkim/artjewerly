@@ -1,18 +1,46 @@
 @import "tailwindcss";
 
-:root {
+@theme {
+  /* Colors */
   --color-cream: #FAFAF8;
   --color-ink: #1A1A1A;
+  --color-warm-100: #F5F0EB;
+  --color-warm-200: #E8E0D8;
+  --color-warm-300: #D4C9BD;
+  --color-warm-400: #B8A99A;
+  --color-warm-500: #9C8B7A;
+
+  /* Font families — next/font injects CSS vars on <html>, referenced here.
+     Noto Sans KR covers Korean glyphs as a fallback for both heading and body. */
+  --font-family-heading: var(--font-cormorant), 'Cormorant Garamond', var(--font-noto-kr), 'Noto Sans KR', Georgia, serif;
+  --font-family-body: var(--font-inter), 'Inter', var(--font-noto-kr), 'Noto Sans KR', system-ui, sans-serif;
+}
+
+/* Base styles */
+html {
+  background-color: var(--color-cream);
+  color: var(--color-ink);
 }
 
 body {
   background-color: var(--color-cream);
   color: var(--color-ink);
-  font-family: var(--font-inter), sans-serif;
+  font-family: var(--font-family-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 h1, h2, h3, h4, h5, h6 {
-  font-family: var(--font-cormorant), serif;
+  font-family: var(--font-family-heading);
+}
+
+/* Explicit utility classes for font families */
+.font-heading {
+  font-family: var(--font-family-heading);
+}
+
+.font-body {
+  font-family: var(--font-family-body);
 }
 
 @media (prefers-reduced-motion: reduce) {
