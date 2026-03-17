@@ -1,25 +1,23 @@
 import type { Metadata } from "next";
-import { Inter, Cormorant_Garamond, Noto_Sans_KR } from "next/font/google";
+import { Noto_Serif_KR, Cormorant_Garamond } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 
-const inter = Inter({
+const notoSerifKR = Noto_Serif_KR({
   subsets: ["latin"],
-  variable: "--font-inter",
+  weight: ["300", "400", "700"],
+  variable: "--font-noto-serif-kr",
   display: "swap",
 });
 
-const cormorant = Cormorant_Garamond({
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"],
-  variable: "--font-cormorant",
-  display: "swap",
-});
-
-// Korean subset — covers all Hangul glyphs
-const notoSansKR = Noto_Sans_KR({
-  subsets: ["latin"],
-  weight: ["300", "400", "500"],
-  variable: "--font-noto-kr",
+const pretendard = localFont({
+  src: [
+    {
+      path: "./fonts/PretendardVariable.woff2",
+      style: "normal",
+    },
+  ],
+  variable: "--font-pretendard",
   display: "swap",
 });
 
@@ -28,8 +26,14 @@ export const metadata: Metadata = {
   description: "Art Jewelry & Fine Jewelry",
 };
 
-// Font variable classes exposed globally so locale layout can use them
-export const fontVariables = `${inter.variable} ${cormorant.variable} ${notoSansKR.variable}`;
+const cormorant = Cormorant_Garamond({
+  subsets: ["latin"],
+  weight: ["300", "400", "500"],
+  variable: "--font-cormorant",
+  display: "swap",
+});
+
+export const fontVariables = `${notoSerifKR.variable} ${pretendard.variable} ${cormorant.variable}`;
 
 export default function RootLayout({
   children,

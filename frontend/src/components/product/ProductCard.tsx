@@ -23,26 +23,27 @@ export function ProductCard({ product, locale, index = 0 }: ProductCardProps) {
       style={{ animationDelay: `${index * 70}ms` }}
     >
       <Link href={detailHref} className="group block">
-        <div className="overflow-hidden">
-          {primaryImage ? (
-            <AnimatedImage
-              src={primaryImage.variants.medium}
-              srcSet={`${primaryImage.variants.thumbnail} 400w, ${primaryImage.variants.medium} 800w`}
-              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-              alt={locale === 'en' ? primaryImage.alt_en : primaryImage.alt_ko}
-              blur={primaryImage.variants.blur}
-              aspectRatio="4/5"
-              className="transition-transform duration-300 ease-out group-hover:scale-[1.02]"
-            />
-          ) : (
-            <div
-              className="w-full bg-warm-100 transition-transform duration-300 ease-out group-hover:scale-[1.02]"
-              style={{ aspectRatio: '4/5' }}
-            />
-          )}
-        </div>
+        <div className="max-w-[80%] mx-auto">
+          <div className="overflow-hidden">
+            {primaryImage ? (
+              <AnimatedImage
+                src={primaryImage.variants.medium}
+                srcSet={`${primaryImage.variants.thumbnail} 400w, ${primaryImage.variants.medium} 800w`}
+                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                alt={locale === 'en' ? primaryImage.alt_en : primaryImage.alt_ko}
+                blur={primaryImage.variants.blur}
+                aspectRatio="4/5"
+                className="transition-transform duration-300 ease-out group-hover:scale-[1.02]"
+              />
+            ) : (
+              <div
+                className="w-full bg-warm-100 transition-transform duration-300 ease-out group-hover:scale-[1.02]"
+                style={{ aspectRatio: '4/5' }}
+              />
+            )}
+          </div>
 
-        <div className="mt-4 space-y-1">
+          <div className="mt-4 space-y-1">
           <p className="font-body text-xs tracking-widest uppercase text-ink group-hover:text-warm-500 transition-colors duration-200">
             {title}
           </p>
@@ -56,6 +57,7 @@ export function ProductCard({ product, locale, index = 0 }: ProductCardProps) {
               )}
             </p>
           )}
+          </div>
         </div>
       </Link>
     </div>

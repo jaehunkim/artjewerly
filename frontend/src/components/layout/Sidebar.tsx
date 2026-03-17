@@ -32,10 +32,10 @@ export function Sidebar() {
       </button>
 
       {/* Desktop sidebar */}
-      <aside className="hidden md:flex fixed left-0 top-0 h-full w-[200px] flex-col justify-between p-8 border-r border-warm-200 bg-cream z-40">
+      <aside className="hidden md:flex fixed left-0 top-0 h-full w-[140px] flex-col justify-between p-6 border-r border-warm-200 bg-cream z-40">
         <div>
           <Link href="/" className="block mb-12">
-            <h2 className="font-heading text-xl font-light tracking-[0.3em]">
+            <h2 className="font-heading text-xs font-light tracking-[0.3em]">
               HEEANG
             </h2>
           </Link>
@@ -44,7 +44,7 @@ export function Sidebar() {
               <Link
                 key={link.href}
                 href={link.href}
-                className={`block font-body text-xs tracking-widest uppercase transition-colors ${
+                className={`block font-heading text-xs tracking-widest transition-colors ${
                   pathname === link.href
                     ? 'text-ink'
                     : 'text-warm-400 hover:text-ink'

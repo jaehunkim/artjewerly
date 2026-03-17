@@ -59,7 +59,10 @@ export function AnimatedImage({
         loading={priority ? 'eager' : 'lazy'}
         onLoad={() => setLoaded(true)}
         className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ease-out ${className}`}
-        style={{ opacity: loaded ? 1 : 0 }}
+        style={{
+          opacity: loaded ? 1 : 0,
+          filter: 'saturate(0.7) brightness(1.05) contrast(0.9)',
+        }}
       />
     </div>
   );
