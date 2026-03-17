@@ -39,7 +39,7 @@ export default function CartPage() {
             <div className="space-y-6">
               {items.map((item) => {
                 const title = isKo ? item.product.title_ko : item.product.title_en;
-                const thumb = item.product.images[0]?.variants.thumbnail;
+                const thumb = item.product.images?.[0]?.variants.thumbnail;
                 const price = item.product.price ?? 0;
                 const detailHref =
                   item.product.category === 'art'

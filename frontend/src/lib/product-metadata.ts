@@ -17,7 +17,7 @@ export async function buildProductMetadata(locale: string, id: string): Promise<
   const isKo = locale === 'ko';
   const title = isKo ? product.title_ko : product.title_en;
   const description = isKo ? product.description_ko : product.description_en;
-  const ogImage = product.images[0]?.variants.medium;
+  const ogImage = product.images?.[0]?.variants.medium;
 
   return {
     title,

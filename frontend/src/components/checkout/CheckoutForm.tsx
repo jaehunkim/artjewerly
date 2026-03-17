@@ -46,12 +46,13 @@ export function CheckoutForm({ items, locale }: CheckoutFormProps) {
   const defaultMethod: PaymentMethod = locale === 'ko' ? 'toss' : 'stripe';
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>(defaultMethod);
 
-  const [email, setEmail] = useState('');
-  const [name, setName] = useState('');
-  const [phone, setPhone] = useState('');
-  const [address, setAddress] = useState('');
-  const [detailAddress, setDetailAddress] = useState('');
-  const [zipcode, setZipcode] = useState('');
+  const isDev = process.env.NODE_ENV === 'development';
+  const [email, setEmail] = useState(isDev ? 'test@heeang.com' : '');
+  const [name, setName] = useState(isDev ? '김테스트' : '');
+  const [phone, setPhone] = useState(isDev ? '010-1234-5678' : '');
+  const [address, setAddress] = useState(isDev ? '서울시 강남구 테헤란로 123' : '');
+  const [detailAddress, setDetailAddress] = useState(isDev ? '4층 401호' : '');
+  const [zipcode, setZipcode] = useState(isDev ? '06142' : '');
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);

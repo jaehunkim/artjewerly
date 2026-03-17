@@ -26,7 +26,8 @@ export function ProductDetail({ product, locale }: ProductDetailProps) {
     locale === 'en' ? product.description_en : product.description_ko;
   const backLabel = locale === 'en' ? '← Back' : '← 돌아가기';
   const backHref = product.category === 'art' ? ('/art' as const) : ('/shop' as const);
-  const activeImage = product.images[activeIndex];
+  const images = product.images ?? [];
+  const activeImage = images[activeIndex];
 
   return (
     <div className="min-h-screen">
@@ -60,9 +61,9 @@ export function ProductDetail({ product, locale }: ProductDetailProps) {
             </div>
 
             {/* Thumbnail strip — only shown when multiple images */}
-            {product.images.length > 1 && (
+            {images.length > 1 && (
               <div className="flex gap-3 mt-4">
-                {product.images.map((img, i) => (
+                {images.map((img, i) => (
                   <button
                     key={img.id}
                     onClick={() => setActiveIndex(i)}

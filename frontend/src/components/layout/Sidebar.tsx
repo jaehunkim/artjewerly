@@ -2,7 +2,7 @@
 
 import { useTranslations } from 'next-intl';
 import { Link, usePathname } from '@/lib/i18n/routing';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { LanguageSwitcher } from '@/components/ui/LanguageSwitcher';
 import { useCartStore } from '@/store/cart';
 
@@ -10,8 +10,11 @@ export function Sidebar() {
   const t = useTranslations('nav');
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const { openDrawer, totalItems } = useCartStore();
-  const cartCount = totalItems();
+
+  useEffect(() => setMounted(true), []);
+  const cartCount = mounted ? totalItems() : 0;
 
   const navLinks = [
     { href: '/art' as const, label: t('artJewelry') },

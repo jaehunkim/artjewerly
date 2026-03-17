@@ -11,7 +11,7 @@ interface ProductCardProps {
 
 export function ProductCard({ product, locale, index = 0 }: ProductCardProps) {
   const title = locale === 'en' ? product.title_en : product.title_ko;
-  const primaryImage = product.images[0];
+  const primaryImage = product.images?.[0];
   const detailHref =
     product.category === 'art'
       ? (`/art/${product.id}` as const)
