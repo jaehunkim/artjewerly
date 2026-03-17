@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getProduct, mockArtProducts } from '@/lib/mock-data';
+import { buildProductMetadata } from '@/lib/product-metadata';
 import { ProductDetail } from '@/components/product/ProductDetail';
 import { PageTransition } from '@/components/ui/PageTransition';
 
@@ -12,23 +13,7 @@ export async function generateMetadata({
   params: Promise<{ locale: string; id: string }>;
 }): Promise<Metadata> {
   const { locale, id } = await params;
-  const product = getProduct(id);
-  if (!product) return {};
-
-  const isKo = locale === 'ko';
-  const title = isKo ? product.title_ko : product.title_en;
-  const description = isKo ? product.description_ko : product.description_en;
-  const ogImage = product.images[0]?.variants.medium;
-
-  return {
-    title,
-    description,
-    openGraph: {
-      title,
-      description,
-      images: ogImage ? [{ url: ogImage }] : [],
-    },
-  };
+  return buildProductMetadata(locale, id);
 }
 
 interface ArtDetailPageProps {

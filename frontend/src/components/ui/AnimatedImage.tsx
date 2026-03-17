@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { motion } from 'framer-motion';
 
 interface AnimatedImageProps {
   src: string;
@@ -39,7 +38,7 @@ export function AnimatedImage({
       className="relative overflow-hidden w-full"
       style={{ aspectRatio }}
     >
-      {/* Blur placeholder — shown until main image is ready */}
+      {/* Blur placeholder -- shown until main image is ready */}
       {blur && (
         <img
           src={blur}
@@ -51,7 +50,7 @@ export function AnimatedImage({
       )}
 
       {/* Main image */}
-      <motion.img
+      <img
         ref={imgRef}
         src={src}
         srcSet={srcSet}
@@ -59,10 +58,8 @@ export function AnimatedImage({
         alt={alt}
         loading={priority ? 'eager' : 'lazy'}
         onLoad={() => setLoaded(true)}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: loaded ? 1 : 0 }}
-        transition={{ duration: 0.5, ease: 'easeOut' }}
-        className={`absolute inset-0 w-full h-full object-cover ${className}`}
+        className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ease-out ${className}`}
+        style={{ opacity: loaded ? 1 : 0 }}
       />
     </div>
   );

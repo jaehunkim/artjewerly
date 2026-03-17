@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { loadStripe } from '@stripe/stripe-js';
+import { loadStripe, type Stripe } from '@stripe/stripe-js';
 import {
   Elements,
   PaymentElement,
@@ -10,9 +10,17 @@ import {
 } from '@stripe/react-stripe-js';
 import { useTranslations } from 'next-intl';
 
-const stripePromise = loadStripe(
-  process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || ''
-);
+// Lazy-load Stripe only when the component is first rendered,
+// avoiding an eager network request for stripe.js in the global bundle.
+let stripePromise: Promise<Stripe | null> | null = null;
+function getStripe(): Promise<Stripe | null> {
+  if (!stripePromise) {
+    stripePromise = loadStripe(
+      process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || ''
+    );
+  }
+  return stripePromise;
+}
 
 interface StripeFormProps {
   orderId: string;
@@ -76,7 +84,7 @@ interface StripePaymentProps {
 export function StripePayment({ clientSecret, orderId, locale, onSuccess }: StripePaymentProps) {
   return (
     <Elements
-      stripe={stripePromise}
+      stripe={getStripe()}
       options={{ clientSecret, appearance: { theme: 'stripe' } }}
     >
       <StripeForm orderId={orderId} locale={locale} onSuccess={onSuccess} />

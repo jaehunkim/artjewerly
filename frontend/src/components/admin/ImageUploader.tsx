@@ -2,22 +2,14 @@
 
 import { useState, useRef, DragEvent, ChangeEvent } from 'react';
 import { adminFetch } from '@/lib/admin-api';
-
-interface UploadedImage {
-  id: string;
-  url: string;
-  sort_order: number;
-}
-
-interface PresignedResponse {
-  upload_url: string;
-  key: string;
-  image_id: string;
-}
+import {
+  type AdminImage,
+  type PresignedImageUploadResponse,
+} from '@/lib/admin-types';
 
 interface ImageUploaderProps {
-  images: UploadedImage[];
-  onChange: (images: UploadedImage[]) => void;
+  images: AdminImage[];
+  onChange: (images: AdminImage[]) => void;
 }
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
@@ -39,15 +31,18 @@ export function ImageUploader({ images, onChange }: ImageUploaderProps) {
     return null;
   }
 
-  async function uploadFile(file: File): Promise<UploadedImage> {
+  async function uploadFile(file: File): Promise<AdminImage> {
     // 1. Get presigned URL
-    const presigned = await adminFetch<PresignedResponse>('/api/images/presign', {
-      method: 'POST',
-      body: JSON.stringify({
-        filename: file.name,
-        content_type: file.type,
-      }),
-    });
+    const presigned = await adminFetch<PresignedImageUploadResponse>(
+      '/api/images/presign',
+      {
+        method: 'POST',
+        body: JSON.stringify({
+          filename: file.name,
+          content_type: file.type,
+        }),
+      }
+    );
 
     // 2. Upload to R2
     const uploadRes = await fetch(presigned.upload_url, {
@@ -58,7 +53,7 @@ export function ImageUploader({ images, onChange }: ImageUploaderProps) {
     if (!uploadRes.ok) throw new Error('Upload to storage failed');
 
     // 3. Register image and generate variants
-    const registered = await adminFetch<UploadedImage>('/api/images', {
+    const registered = await adminFetch<AdminImage>('/api/images', {
       method: 'POST',
       body: JSON.stringify({
         key: presigned.key,
@@ -83,7 +78,7 @@ export function ImageUploader({ images, onChange }: ImageUploaderProps) {
 
     setUploading(true);
     try {
-      const uploaded: UploadedImage[] = [];
+      const uploaded: AdminImage[] = [];
       for (const file of fileArray) {
         const img = await uploadFile(file);
         uploaded.push({ ...img, sort_order: images.length + uploaded.length });

@@ -3,19 +3,7 @@
 import { useState, useEffect, use } from 'react';
 import { adminFetch } from '@/lib/admin-api';
 import { ProductForm } from '@/components/admin/ProductForm';
-
-interface Product {
-  id: string;
-  category: string;
-  title_ko: string;
-  title_en: string;
-  description_ko: string;
-  description_en: string;
-  price_krw: number;
-  price_usd?: number;
-  is_available: boolean;
-  images: { id: string; url: string; sort_order: number }[];
-}
+import { type AdminProductDetail } from '@/lib/admin-types';
 
 interface EditProductPageProps {
   params: Promise<{ id: string }>;
@@ -23,12 +11,12 @@ interface EditProductPageProps {
 
 export default function EditProductPage({ params }: EditProductPageProps) {
   const { id } = use(params);
-  const [product, setProduct] = useState<Product | null>(null);
+  const [product, setProduct] = useState<AdminProductDetail | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
   useEffect(() => {
-    adminFetch<Product>(`/api/products/${id}`)
+    adminFetch<AdminProductDetail>(`/api/products/${id}`)
       .then(setProduct)
       .catch((err) => setError(err instanceof Error ? err.message : 'Failed to load'))
       .finally(() => setLoading(false));

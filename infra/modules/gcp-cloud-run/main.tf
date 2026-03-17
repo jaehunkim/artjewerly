@@ -1,37 +1,57 @@
+locals {
+  service_name = "${var.app_name}-api"
+  base_labels = {
+    app         = var.app_name
+    managed_by  = "terraform"
+    environment = var.environment
+  }
+  labels = merge(var.labels, local.base_labels)
+}
+
 # Enable required APIs
 resource "google_project_service" "run" {
-  service = "run.googleapis.com"
+  service            = "run.googleapis.com"
+  disable_on_destroy = false
 }
 
 resource "google_project_service" "artifactregistry" {
-  service = "artifactregistry.googleapis.com"
+  service            = "artifactregistry.googleapis.com"
+  disable_on_destroy = false
 }
 
 # Artifact Registry for Docker images
 resource "google_artifact_registry_repository" "api" {
   location      = var.region
-  repository_id = "${var.app_name}-api"
+  repository_id = local.service_name
   format        = "DOCKER"
+  labels        = local.labels
+
+  lifecycle {
+    create_before_destroy = true
+  }
 
   depends_on = [google_project_service.artifactregistry]
 }
 
 # Cloud Run service
 resource "google_cloud_run_v2_service" "api" {
-  name     = "${var.app_name}-api"
+  name     = local.service_name
   location = var.region
+  labels   = local.labels
 
   template {
+    labels = local.labels
+
     scaling {
-      min_instance_count = 0
-      max_instance_count = 2
+      min_instance_count = var.min_instance_count
+      max_instance_count = var.max_instance_count
     }
 
     containers {
       image = "${var.region}-docker.pkg.dev/${var.project_id}/${google_artifact_registry_repository.api.repository_id}/api:latest"
 
       ports {
-        container_port = 8080
+        container_port = var.container_port
       }
 
       env {
@@ -77,11 +97,16 @@ resource "google_cloud_run_v2_service" "api" {
 
       resources {
         limits = {
-          cpu    = "1"
-          memory = "512Mi"
+          cpu    = var.cpu_limit
+          memory = var.memory_limit
         }
       }
     }
+  }
+
+  lifecycle {
+    create_before_destroy = true
+    ignore_changes        = [template[0].containers[0].image]
   }
 
   depends_on = [google_project_service.run]

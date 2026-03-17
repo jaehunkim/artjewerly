@@ -16,9 +16,7 @@ func NewOrderService(repo *repository.OrderRepository) *OrderService {
 }
 
 func (s *OrderService) Create(ctx context.Context, req *model.CreateOrderRequest) (*model.Order, error) {
-	// TODO: calculate total from product prices
-	total := 0
-	return s.repo.Create(ctx, req, total)
+	return s.repo.Create(ctx, req)
 }
 
 func (s *OrderService) Get(ctx context.Context, id string) (*model.Order, error) {

@@ -1,47 +1,63 @@
 package middleware
 
 import (
+	"crypto/sha256"
 	"crypto/subtle"
-	"encoding/base64"
 	"net/http"
 	"strings"
 )
 
+var adminUserHash = sha256.Sum256([]byte("admin"))
+
 type AdminAuth struct {
-	password string
+	passwordHash [32]byte
+	enabled      bool
 }
 
 func NewAdminAuth(password string) *AdminAuth {
-	return &AdminAuth{password: password}
+	trimmedPassword := strings.TrimSpace(password)
+	return &AdminAuth{
+		passwordHash: sha256.Sum256([]byte(trimmedPassword)),
+		enabled:      !isInsecureAdminPassword(trimmedPassword),
+	}
 }
 
 func (a *AdminAuth) Authenticate(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		auth := r.Header.Get("Authorization")
-		if !strings.HasPrefix(auth, "Basic ") {
-			w.Header().Set("WWW-Authenticate", `Basic realm="admin"`)
-			http.Error(w, "unauthorized", http.StatusUnauthorized)
+		if !a.enabled {
+			a.unauthorized(w)
 			return
 		}
 
-		decoded, err := base64.StdEncoding.DecodeString(auth[6:])
-		if err != nil {
-			http.Error(w, "unauthorized", http.StatusUnauthorized)
+		username, password, ok := r.BasicAuth()
+		if !ok {
+			a.unauthorized(w)
 			return
 		}
 
-		parts := strings.SplitN(string(decoded), ":", 2)
-		if len(parts) != 2 {
-			http.Error(w, "unauthorized", http.StatusUnauthorized)
-			return
-		}
+		usernameHash := sha256.Sum256([]byte(username))
+		passwordHash := sha256.Sum256([]byte(password))
 
-		if subtle.ConstantTimeCompare([]byte(parts[0]), []byte("admin")) != 1 ||
-			subtle.ConstantTimeCompare([]byte(parts[1]), []byte(a.password)) != 1 {
-			http.Error(w, "unauthorized", http.StatusUnauthorized)
+		if subtle.ConstantTimeCompare(usernameHash[:], adminUserHash[:]) != 1 ||
+			subtle.ConstantTimeCompare(passwordHash[:], a.passwordHash[:]) != 1 {
+			a.unauthorized(w)
 			return
 		}
 
 		next.ServeHTTP(w, r)
 	})
+}
+
+func (a *AdminAuth) unauthorized(w http.ResponseWriter) {
+	w.Header().Set("WWW-Authenticate", `Basic realm="admin"`)
+	http.Error(w, "unauthorized", http.StatusUnauthorized)
+}
+
+func isInsecureAdminPassword(password string) bool {
+	switch strings.ToLower(strings.TrimSpace(password)) {
+	case "", "admin", "changeme":
+		return true
+	default:
+		return false
+	}
 }

@@ -2,12 +2,12 @@
 resource "cloudflare_pages_project" "frontend" {
   account_id        = var.account_id
   name              = var.app_name
-  production_branch = "main"
+  production_branch = var.production_branch
 
   build_config {
-    build_command   = "npm run build"
-    destination_dir = ".vercel/output/static"
-    root_dir        = "frontend"
+    build_command   = var.build_command
+    destination_dir = var.destination_dir
+    root_dir        = var.root_dir
   }
 }
 
@@ -15,7 +15,7 @@ resource "cloudflare_pages_project" "frontend" {
 resource "cloudflare_r2_bucket" "images" {
   account_id = var.account_id
   name       = "${var.app_name}-images"
-  location   = "APAC"
+  location   = var.r2_bucket_location
 }
 
 # Note: R2 public access and CORS are configured via the Cloudflare dashboard

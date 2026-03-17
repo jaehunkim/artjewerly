@@ -92,6 +92,9 @@ func TestAdminAuth_rejectsRequestWithNonBasicScheme(t *testing.T) {
 	if rr.Code != http.StatusUnauthorized {
 		t.Errorf("expected 401, got %d", rr.Code)
 	}
+	if rr.Header().Get("WWW-Authenticate") == "" {
+		t.Error("expected WWW-Authenticate header to be set")
+	}
 }
 
 func TestAdminAuth_rejectsRequestWithInvalidBase64Encoding(t *testing.T) {
@@ -100,6 +103,39 @@ func TestAdminAuth_rejectsRequestWithInvalidBase64Encoding(t *testing.T) {
 
 	req := httptest.NewRequest(http.MethodGet, "/", nil)
 	req.Header.Set("Authorization", "Basic !!!notbase64!!!")
+	rr := httptest.NewRecorder()
+
+	handler.ServeHTTP(rr, req)
+
+	if rr.Code != http.StatusUnauthorized {
+		t.Errorf("expected 401, got %d", rr.Code)
+	}
+	if rr.Header().Get("WWW-Authenticate") == "" {
+		t.Error("expected WWW-Authenticate header to be set")
+	}
+}
+
+func TestAdminAuth_rejectsRequestWhenPasswordIsNotConfigured(t *testing.T) {
+	auth := NewAdminAuth(" ")
+	handler := auth.Authenticate(okHandler())
+
+	req := httptest.NewRequest(http.MethodGet, "/", nil)
+	req.Header.Set("Authorization", basicAuthHeader("admin", "secret"))
+	rr := httptest.NewRecorder()
+
+	handler.ServeHTTP(rr, req)
+
+	if rr.Code != http.StatusUnauthorized {
+		t.Errorf("expected 401, got %d", rr.Code)
+	}
+}
+
+func TestAdminAuth_rejectsRequestWhenPasswordIsPlaceholder(t *testing.T) {
+	auth := NewAdminAuth("changeme")
+	handler := auth.Authenticate(okHandler())
+
+	req := httptest.NewRequest(http.MethodGet, "/", nil)
+	req.Header.Set("Authorization", basicAuthHeader("admin", "changeme"))
 	rr := httptest.NewRecorder()
 
 	handler.ServeHTTP(rr, req)

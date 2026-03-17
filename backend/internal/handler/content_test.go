@@ -87,6 +87,23 @@ func TestContentHandler_Get_returns404WhenContentNotFound(t *testing.T) {
 	}
 }
 
+func TestContentHandler_Get_returns400WhenPageIsInvalid(t *testing.T) {
+	h := &ContentHandler{svc: &mockContentService{
+		getFn: func(_ context.Context, page string) (*model.SiteContent, error) {
+			return nil, model.ErrInvalidContentPage
+		},
+	}}
+
+	req := httptest.NewRequest(http.MethodGet, "/content/../../etc/passwd", nil)
+	req = withChiPageParam(req, "../../etc/passwd")
+	rr := httptest.NewRecorder()
+	h.Get(rr, req)
+
+	if rr.Code != http.StatusBadRequest {
+		t.Errorf("expected 400, got %d", rr.Code)
+	}
+}
+
 func TestContentHandler_Get_setsPageParamFromURLWhenCallingService(t *testing.T) {
 	var capturedPage string
 	h := &ContentHandler{svc: &mockContentService{
@@ -132,6 +149,67 @@ func TestContentHandler_Update_returns400OnInvalidRequestBody(t *testing.T) {
 
 	req := httptest.NewRequest(http.MethodPut, "/content/home", bytes.NewBufferString("{bad json"))
 	req = withChiPageParam(req, "home")
+	req.Header.Set("Content-Type", "application/json")
+	rr := httptest.NewRecorder()
+	h.Update(rr, req)
+
+	if rr.Code != http.StatusBadRequest {
+		t.Errorf("expected 400, got %d", rr.Code)
+	}
+}
+
+func TestContentHandler_Update_returns400OnWrongContentType(t *testing.T) {
+	h := &ContentHandler{svc: &mockContentService{}}
+
+	req := httptest.NewRequest(http.MethodPut, "/content/home", bytes.NewBufferString(`{"content_ko":"hello"}`))
+	req = withChiPageParam(req, "home")
+	req.Header.Set("Content-Type", "text/plain")
+	rr := httptest.NewRecorder()
+	h.Update(rr, req)
+
+	if rr.Code != http.StatusBadRequest {
+		t.Errorf("expected 400, got %d", rr.Code)
+	}
+}
+
+func TestContentHandler_Update_returns400OnUnknownJSONFields(t *testing.T) {
+	h := &ContentHandler{svc: &mockContentService{}}
+
+	req := httptest.NewRequest(http.MethodPut, "/content/home", bytes.NewBufferString(`{"unknown":"value"}`))
+	req = withChiPageParam(req, "home")
+	req.Header.Set("Content-Type", "application/json")
+	rr := httptest.NewRecorder()
+	h.Update(rr, req)
+
+	if rr.Code != http.StatusBadRequest {
+		t.Errorf("expected 400, got %d", rr.Code)
+	}
+}
+
+func TestContentHandler_Update_returns400OnMultipleJSONObjects(t *testing.T) {
+	h := &ContentHandler{svc: &mockContentService{}}
+
+	req := httptest.NewRequest(http.MethodPut, "/content/home", bytes.NewBufferString(`{} {}`))
+	req = withChiPageParam(req, "home")
+	req.Header.Set("Content-Type", "application/json")
+	rr := httptest.NewRecorder()
+	h.Update(rr, req)
+
+	if rr.Code != http.StatusBadRequest {
+		t.Errorf("expected 400, got %d", rr.Code)
+	}
+}
+
+func TestContentHandler_Update_returns400OnInvalidServiceValidation(t *testing.T) {
+	h := &ContentHandler{svc: &mockContentService{
+		updateFn: func(_ context.Context, page string, req *model.UpdateContentRequest) (*model.SiteContent, error) {
+			return nil, model.ErrEmptyContentUpdate
+		},
+	}}
+
+	req := httptest.NewRequest(http.MethodPut, "/content/home", bytes.NewBufferString(`{"content_ko":"hello"}`))
+	req = withChiPageParam(req, "home")
+	req.Header.Set("Content-Type", "application/json")
 	rr := httptest.NewRecorder()
 	h.Update(rr, req)
 
@@ -155,5 +233,13 @@ func TestContentHandler_Update_returns500WhenServiceFails(t *testing.T) {
 
 	if rr.Code != http.StatusInternalServerError {
 		t.Errorf("expected 500, got %d", rr.Code)
+	}
+
+	var body map[string]interface{}
+	if err := json.NewDecoder(rr.Body).Decode(&body); err != nil {
+		t.Fatalf("invalid JSON: %v", err)
+	}
+	if body["error"] != "failed to update content" {
+		t.Errorf("expected sanitized error message, got %v", body["error"])
 	}
 }

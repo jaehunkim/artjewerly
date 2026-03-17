@@ -21,12 +21,21 @@ func (s *ProductService) List(ctx context.Context, category string) ([]model.Pro
 	if err != nil {
 		return nil, err
 	}
+	if len(products) == 0 {
+		return products, nil
+	}
+
+	// Batch-fetch all images in a single query instead of N+1 queries.
+	productIDs := make([]string, len(products))
 	for i := range products {
-		images, err := s.imageRepo.ListByProduct(ctx, products[i].ID)
-		if err != nil {
-			return nil, err
-		}
-		products[i].Images = images
+		productIDs[i] = products[i].ID
+	}
+	imagesByProduct, err := s.imageRepo.ListByProductIDs(ctx, productIDs)
+	if err != nil {
+		return nil, err
+	}
+	for i := range products {
+		products[i].Images = imagesByProduct[products[i].ID]
 	}
 	return products, nil
 }

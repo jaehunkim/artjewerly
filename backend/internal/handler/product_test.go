@@ -14,6 +14,12 @@ import (
 	"github.com/jaehunkim/heeang-api/internal/model"
 )
 
+const (
+	testUUID1 = "00000000-0000-0000-0000-000000000001"
+	testUUID2 = "00000000-0000-0000-0000-000000000002"
+	testUUID3 = "00000000-0000-0000-0000-000000000003"
+)
+
 // mockProductService implements productServicer for testing.
 type mockProductService struct {
 	listFn   func(ctx context.Context, category string) ([]model.Product, error)
@@ -119,15 +125,15 @@ func TestProductHandler_List_returns500WhenServiceFails(t *testing.T) {
 }
 
 func TestProductHandler_Get_returns200WithProductOnSuccess(t *testing.T) {
-	product := sampleProduct("xyz-99")
+	product := sampleProduct(testUUID1)
 	h := &ProductHandler{svc: &mockProductService{
 		getFn: func(_ context.Context, id string) (*model.Product, error) {
 			return product, nil
 		},
 	}}
 
-	req := httptest.NewRequest(http.MethodGet, "/products/xyz-99", nil)
-	req = withChiParam(req, "id", "xyz-99")
+	req := httptest.NewRequest(http.MethodGet, "/products/"+testUUID1, nil)
+	req = withChiParam(req, "id", testUUID1)
 	rr := httptest.NewRecorder()
 	h.Get(rr, req)
 
@@ -143,13 +149,26 @@ func TestProductHandler_Get_returns404WhenProductNotFound(t *testing.T) {
 		},
 	}}
 
-	req := httptest.NewRequest(http.MethodGet, "/products/missing", nil)
-	req = withChiParam(req, "id", "missing")
+	req := httptest.NewRequest(http.MethodGet, "/products/"+testUUID2, nil)
+	req = withChiParam(req, "id", testUUID2)
 	rr := httptest.NewRecorder()
 	h.Get(rr, req)
 
 	if rr.Code != http.StatusNotFound {
 		t.Errorf("expected 404, got %d", rr.Code)
+	}
+}
+
+func TestProductHandler_Get_returns400WhenIDNotUUID(t *testing.T) {
+	h := &ProductHandler{svc: &mockProductService{}}
+
+	req := httptest.NewRequest(http.MethodGet, "/products/not-a-uuid", nil)
+	req = withChiParam(req, "id", "not-a-uuid")
+	rr := httptest.NewRecorder()
+	h.Get(rr, req)
+
+	if rr.Code != http.StatusBadRequest {
+		t.Errorf("expected 400, got %d", rr.Code)
 	}
 }
 
@@ -203,7 +222,7 @@ func TestProductHandler_Create_returns500WhenServiceFails(t *testing.T) {
 }
 
 func TestProductHandler_Update_returns200WithUpdatedProduct(t *testing.T) {
-	updated := sampleProduct("upd-id")
+	updated := sampleProduct(testUUID1)
 	h := &ProductHandler{svc: &mockProductService{
 		updateFn: func(_ context.Context, id string, req *model.UpdateProductRequest) (*model.Product, error) {
 			return updated, nil
@@ -212,8 +231,8 @@ func TestProductHandler_Update_returns200WithUpdatedProduct(t *testing.T) {
 
 	titleEn := "Updated Ring"
 	reqBody, _ := json.Marshal(model.UpdateProductRequest{TitleEn: &titleEn})
-	req := httptest.NewRequest(http.MethodPut, "/products/upd-id", bytes.NewBuffer(reqBody))
-	req = withChiParam(req, "id", "upd-id")
+	req := httptest.NewRequest(http.MethodPut, "/products/"+testUUID1, bytes.NewBuffer(reqBody))
+	req = withChiParam(req, "id", testUUID1)
 	req.Header.Set("Content-Type", "application/json")
 	rr := httptest.NewRecorder()
 	h.Update(rr, req)
@@ -226,8 +245,8 @@ func TestProductHandler_Update_returns200WithUpdatedProduct(t *testing.T) {
 func TestProductHandler_Update_returns400OnInvalidRequestBody(t *testing.T) {
 	h := &ProductHandler{svc: &mockProductService{}}
 
-	req := httptest.NewRequest(http.MethodPut, "/products/some-id", bytes.NewBufferString("{bad json"))
-	req = withChiParam(req, "id", "some-id")
+	req := httptest.NewRequest(http.MethodPut, "/products/"+testUUID1, bytes.NewBufferString("{bad json"))
+	req = withChiParam(req, "id", testUUID1)
 	rr := httptest.NewRecorder()
 	h.Update(rr, req)
 
@@ -243,8 +262,8 @@ func TestProductHandler_Update_returns500WhenServiceFails(t *testing.T) {
 		},
 	}}
 
-	req := httptest.NewRequest(http.MethodPut, "/products/x", bytes.NewBufferString("{}"))
-	req = withChiParam(req, "id", "x")
+	req := httptest.NewRequest(http.MethodPut, "/products/"+testUUID3, bytes.NewBufferString("{}"))
+	req = withChiParam(req, "id", testUUID3)
 	req.Header.Set("Content-Type", "application/json")
 	rr := httptest.NewRecorder()
 	h.Update(rr, req)
@@ -261,8 +280,8 @@ func TestProductHandler_Delete_returns200WithDeletedIdOnSuccess(t *testing.T) {
 		},
 	}}
 
-	req := httptest.NewRequest(http.MethodDelete, "/products/del-id", nil)
-	req = withChiParam(req, "id", "del-id")
+	req := httptest.NewRequest(http.MethodDelete, "/products/"+testUUID1, nil)
+	req = withChiParam(req, "id", testUUID1)
 	rr := httptest.NewRecorder()
 	h.Delete(rr, req)
 
@@ -277,8 +296,8 @@ func TestProductHandler_Delete_returns200WithDeletedIdOnSuccess(t *testing.T) {
 	if !ok {
 		t.Fatalf("expected data to be an object, got %T", body["data"])
 	}
-	if data["deleted"] != "del-id" {
-		t.Errorf("expected deleted id del-id, got %v", data["deleted"])
+	if data["deleted"] != testUUID1 {
+		t.Errorf("expected deleted id %s, got %v", testUUID1, data["deleted"])
 	}
 }
 
@@ -289,8 +308,8 @@ func TestProductHandler_Delete_returns500WhenServiceFails(t *testing.T) {
 		},
 	}}
 
-	req := httptest.NewRequest(http.MethodDelete, "/products/x", nil)
-	req = withChiParam(req, "id", "x")
+	req := httptest.NewRequest(http.MethodDelete, "/products/"+testUUID3, nil)
+	req = withChiParam(req, "id", testUUID3)
 	rr := httptest.NewRecorder()
 	h.Delete(rr, req)
 

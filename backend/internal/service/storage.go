@@ -12,6 +12,8 @@ import (
 	"github.com/aws/aws-sdk-go-v2/credentials"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/google/uuid"
+	"github.com/rs/zerolog/log"
+
 	"github.com/jaehunkim/heeang-api/internal/config"
 	"github.com/jaehunkim/heeang-api/internal/model"
 )
@@ -81,19 +83,27 @@ func (s *StorageService) DeleteImageAndVariants(ctx context.Context, originalKey
 	// Delete variants
 	var variants model.ImageVariants
 	if err := json.Unmarshal(variantsJSON, &variants); err != nil {
-		return nil // No variants to delete
+		log.Warn().Err(err).Str("original_key", originalKey).Msg("failed to unmarshal image variants, skipping variant deletion")
+		return nil
 	}
 
+	var errs []error
 	for _, key := range []string{variants.Thumbnail, variants.Medium, variants.Large} {
 		if key != "" {
 			k := key
-			s.client.DeleteObject(ctx, &s3.DeleteObjectInput{
+			if _, delErr := s.client.DeleteObject(ctx, &s3.DeleteObjectInput{
 				Bucket: &s.bucketName,
 				Key:    &k,
-			})
+			}); delErr != nil {
+				log.Error().Err(delErr).Str("key", k).Msg("failed to delete image variant from storage")
+				errs = append(errs, delErr)
+			}
 		}
 	}
 
+	if len(errs) > 0 {
+		return fmt.Errorf("failed to delete %d image variant(s)", len(errs))
+	}
 	return nil
 }
 

@@ -3,7 +3,6 @@
 import { useTranslations } from 'next-intl';
 import { Link, usePathname } from '@/lib/i18n/routing';
 import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 import { LanguageSwitcher } from '@/components/ui/LanguageSwitcher';
 
 export function Sidebar() {
@@ -60,42 +59,35 @@ export function Sidebar() {
       </aside>
 
       {/* Mobile overlay menu */}
-      <AnimatePresence>
-        {mobileOpen && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 bg-cream"
+      {mobileOpen && (
+        <div className="fixed inset-0 z-50 bg-cream">
+          <button
+            onClick={() => setMobileOpen(false)}
+            className="absolute top-6 right-6"
+            aria-label="Close menu"
           >
-            <button
-              onClick={() => setMobileOpen(false)}
-              className="absolute top-6 right-6"
-              aria-label="Close menu"
-            >
-              <div className="w-6 h-6 relative">
-                <div className="absolute top-1/2 left-0 w-full h-px bg-ink rotate-45" />
-                <div className="absolute top-1/2 left-0 w-full h-px bg-ink -rotate-45" />
-              </div>
-            </button>
-            <div className="flex flex-col items-center justify-center h-full space-y-8">
-              {navLinks.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  onClick={() => setMobileOpen(false)}
-                  className="font-heading text-2xl font-light tracking-widest"
-                >
-                  {link.label}
-                </Link>
-              ))}
-              <div className="mt-8">
-                <LanguageSwitcher />
-              </div>
+            <div className="w-6 h-6 relative">
+              <div className="absolute top-1/2 left-0 w-full h-px bg-ink rotate-45" />
+              <div className="absolute top-1/2 left-0 w-full h-px bg-ink -rotate-45" />
             </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+          </button>
+          <div className="flex flex-col items-center justify-center h-full space-y-8">
+            {navLinks.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                onClick={() => setMobileOpen(false)}
+                className="font-heading text-2xl font-light tracking-widest"
+              >
+                {link.label}
+              </Link>
+            ))}
+            <div className="mt-8">
+              <LanguageSwitcher />
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }

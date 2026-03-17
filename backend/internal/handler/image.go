@@ -10,6 +10,8 @@ import (
 	"github.com/jaehunkim/heeang-api/internal/service"
 )
 
+const maxRequestBodySize = 1 << 20 // 1 MB
+
 type ImageHandler struct {
 	repo       *repository.ImageRepository
 	storageSvc *service.StorageService
@@ -24,6 +26,10 @@ func (h *ImageHandler) Presign(w http.ResponseWriter, r *http.Request) {
 	productID := r.URL.Query().Get("product_id")
 	if productID == "" {
 		respondError(w, http.StatusBadRequest, "product_id required")
+		return
+	}
+	if !isValidUUID(productID) {
+		respondError(w, http.StatusBadRequest, "invalid product_id")
 		return
 	}
 
@@ -59,6 +65,10 @@ func (h *ImageHandler) Create(w http.ResponseWriter, r *http.Request) {
 
 func (h *ImageHandler) Delete(w http.ResponseWriter, r *http.Request) {
 	id := chi.URLParam(r, "id")
+	if !isValidUUID(id) {
+		respondError(w, http.StatusBadRequest, "invalid image id")
+		return
+	}
 
 	image, err := h.repo.Get(r.Context(), id)
 	if err != nil {

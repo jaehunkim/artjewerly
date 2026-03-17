@@ -1,18 +1,40 @@
 # GCP
 gcp_project_id = "your-gcp-project-id"
 gcp_region     = "asia-northeast3"  # Seoul
+container_port = 8080
+
+# Cloud Run
+min_instance_count           = 0
+max_instance_count           = 2
+cpu_limit                    = "1"
+memory_limit                 = "512Mi"
 
 # Cloudflare
 cloudflare_api_token  = "your-cf-api-token"
 cloudflare_account_id = "your-cf-account-id"
 cloudflare_zone_id    = ""  # Optional: for custom domain
+cloudflare_pages_production_branch = "main"
+cloudflare_pages_build_command     = "npm run build"
+cloudflare_pages_destination_dir   = ".vercel/output/static"
+cloudflare_pages_root_dir          = "frontend"
+cloudflare_r2_bucket_location      = "APAC"
+cloudflare_r2_public_url           = ""  # Optional: public/custom domain override
 
 # Neon
-neon_api_key = "your-neon-api-key"
+neon_api_key        = "your-neon-api-key"
+neon_region         = "aws-ap-northeast-2"
+database_name       = "heeang"
+autoscaling_min_cu  = 0.25
+autoscaling_max_cu  = 0.25
 
 # App
 app_name       = "heeang-jewelry"
+environment    = "production"
 admin_password = "changeme-in-production"
+common_labels = {
+  team  = "heeang"
+  stack = "web"
+}
 
 # Payment (optional for MVP)
 stripe_secret_key = ""

@@ -1,34 +1,22 @@
 'use client';
 
-import { useState } from 'react';
+import { type FormEvent, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { adminFetch } from '@/lib/admin-api';
+import {
+  ADMIN_PRODUCT_CATEGORIES,
+  type AdminProductCategory,
+  type AdminProductFormData,
+  type AdminProductFormInitialData,
+} from '@/lib/admin-types';
 import { ImageUploader } from './ImageUploader';
 
-interface ImageItem {
-  id: string;
-  url: string;
-  sort_order: number;
-}
-
-interface ProductFormData {
-  category: string;
-  title_ko: string;
-  title_en: string;
-  description_ko: string;
-  description_en: string;
-  price_krw: number;
-  price_usd: number;
-  is_available: boolean;
-  images: ImageItem[];
-}
-
 interface ProductFormProps {
-  initialData?: Partial<ProductFormData> & { id?: string };
+  initialData?: AdminProductFormInitialData;
   mode: 'new' | 'edit';
 }
 
-const DEFAULT_DATA: ProductFormData = {
+const DEFAULT_DATA: AdminProductFormData = {
   category: 'art',
   title_ko: '',
   title_en: '',
@@ -42,18 +30,21 @@ const DEFAULT_DATA: ProductFormData = {
 
 export function ProductForm({ initialData, mode }: ProductFormProps) {
   const router = useRouter();
-  const [form, setForm] = useState<ProductFormData>({
+  const [form, setForm] = useState<AdminProductFormData>({
     ...DEFAULT_DATA,
     ...initialData,
   });
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
 
-  function set<K extends keyof ProductFormData>(key: K, value: ProductFormData[K]) {
+  function setField<K extends keyof AdminProductFormData>(
+    key: K,
+    value: AdminProductFormData[K]
+  ) {
     setForm((prev) => ({ ...prev, [key]: value }));
   }
 
-  async function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setError('');
     setSaving(true);
@@ -95,12 +86,17 @@ export function ProductForm({ initialData, mode }: ProductFormProps) {
         </label>
         <select
           value={form.category}
-          onChange={(e) => set('category', e.target.value)}
+          onChange={(e) =>
+            setField('category', e.target.value as AdminProductCategory)
+          }
           className="border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:border-gray-500 w-48"
           required
         >
-          <option value="art">Art</option>
-          <option value="sale">Sale</option>
+          {ADMIN_PRODUCT_CATEGORIES.map((category) => (
+            <option key={category} value={category}>
+              {category.charAt(0).toUpperCase() + category.slice(1)}
+            </option>
+          ))}
         </select>
       </div>
 
@@ -113,7 +109,7 @@ export function ProductForm({ initialData, mode }: ProductFormProps) {
           <input
             type="text"
             value={form.title_ko}
-            onChange={(e) => set('title_ko', e.target.value)}
+            onChange={(e) => setField('title_ko', e.target.value)}
             className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:border-gray-500"
             required
           />
@@ -125,7 +121,7 @@ export function ProductForm({ initialData, mode }: ProductFormProps) {
           <input
             type="text"
             value={form.title_en}
-            onChange={(e) => set('title_en', e.target.value)}
+            onChange={(e) => setField('title_en', e.target.value)}
             className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:border-gray-500"
             required
           />
@@ -140,7 +136,7 @@ export function ProductForm({ initialData, mode }: ProductFormProps) {
           </label>
           <textarea
             value={form.description_ko}
-            onChange={(e) => set('description_ko', e.target.value)}
+            onChange={(e) => setField('description_ko', e.target.value)}
             rows={4}
             className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:border-gray-500 resize-y"
           />
@@ -151,7 +147,7 @@ export function ProductForm({ initialData, mode }: ProductFormProps) {
           </label>
           <textarea
             value={form.description_en}
-            onChange={(e) => set('description_en', e.target.value)}
+            onChange={(e) => setField('description_en', e.target.value)}
             rows={4}
             className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:border-gray-500 resize-y"
           />
@@ -168,7 +164,7 @@ export function ProductForm({ initialData, mode }: ProductFormProps) {
             type="number"
             min={0}
             value={form.price_krw}
-            onChange={(e) => set('price_krw', Number(e.target.value))}
+            onChange={(e) => setField('price_krw', Number(e.target.value))}
             className="border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:border-gray-500 w-40"
             required
           />
@@ -183,7 +179,7 @@ export function ProductForm({ initialData, mode }: ProductFormProps) {
               min={0}
               step={0.01}
               value={form.price_usd}
-              onChange={(e) => set('price_usd', Number(e.target.value))}
+              onChange={(e) => setField('price_usd', Number(e.target.value))}
               className="border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:border-gray-500 w-40"
             />
           </div>
@@ -196,7 +192,7 @@ export function ProductForm({ initialData, mode }: ProductFormProps) {
           <input
             type="checkbox"
             checked={form.is_available}
-            onChange={(e) => set('is_available', e.target.checked)}
+            onChange={(e) => setField('is_available', e.target.checked)}
             className="w-4 h-4 rounded border-gray-300 text-gray-900"
           />
           <span className="text-sm font-medium text-gray-700">Available</span>
@@ -210,7 +206,7 @@ export function ProductForm({ initialData, mode }: ProductFormProps) {
         </label>
         <ImageUploader
           images={form.images}
-          onChange={(imgs) => set('images', imgs)}
+          onChange={(images) => setField('images', images)}
         />
       </div>
 

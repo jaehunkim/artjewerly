@@ -22,6 +22,10 @@ func NewPaymentHandler(svc *service.PaymentService) *PaymentHandler {
 
 func (h *PaymentHandler) CreateStripeIntent(w http.ResponseWriter, r *http.Request) {
 	orderID := chi.URLParam(r, "id")
+	if !isValidUUID(orderID) {
+		respondError(w, http.StatusBadRequest, "invalid order id")
+		return
+	}
 
 	clientSecret, err := h.svc.CreateStripePaymentIntent(r.Context(), orderID)
 	if err != nil {
@@ -36,6 +40,10 @@ func (h *PaymentHandler) CreateStripeIntent(w http.ResponseWriter, r *http.Reque
 
 func (h *PaymentHandler) CreateTossPayment(w http.ResponseWriter, r *http.Request) {
 	orderID := chi.URLParam(r, "id")
+	if !isValidUUID(orderID) {
+		respondError(w, http.StatusBadRequest, "invalid order id")
+		return
+	}
 
 	var body struct {
 		SuccessURL string `json:"success_url"`
@@ -56,7 +64,8 @@ func (h *PaymentHandler) CreateTossPayment(w http.ResponseWriter, r *http.Reques
 }
 
 func (h *PaymentHandler) StripeWebhook(w http.ResponseWriter, r *http.Request) {
-	body, err := io.ReadAll(r.Body)
+	// Limit webhook payload to 1 MB to prevent unbounded reads.
+	body, err := io.ReadAll(io.LimitReader(r.Body, maxRequestBodySize))
 	if err != nil {
 		http.Error(w, "read error", http.StatusBadRequest)
 		return

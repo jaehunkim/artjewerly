@@ -19,13 +19,7 @@ export default async function OrderPage({ params }: OrderPageProps) {
     // Order not found or API unavailable — show minimal confirmation
   }
 
-  const shipping = order?.shipping_address as {
-    name?: string;
-    phone?: string;
-    address?: string;
-    detail_address?: string;
-    zipcode?: string;
-  } | null;
+  const shipping = order?.shipping_address ?? null;
 
   return (
     <PageTransition>

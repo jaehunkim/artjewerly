@@ -38,6 +38,34 @@ func (r *ImageRepository) ListByProduct(ctx context.Context, productID string) (
 	return images, nil
 }
 
+// ListByProductIDs fetches images for multiple products in a single query,
+// returning them grouped by product ID. This avoids the N+1 query problem.
+func (r *ImageRepository) ListByProductIDs(ctx context.Context, productIDs []string) (map[string][]model.Image, error) {
+	if len(productIDs) == 0 {
+		return make(map[string][]model.Image), nil
+	}
+
+	rows, err := r.pool.Query(ctx,
+		`SELECT id, product_id, r2_key, variants, alt_ko, alt_en, sort_order, created_at
+		FROM images WHERE product_id = ANY($1) ORDER BY sort_order`, productIDs)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	result := make(map[string][]model.Image, len(productIDs))
+	for rows.Next() {
+		var img model.Image
+		err := rows.Scan(&img.ID, &img.ProductID, &img.R2Key, &img.Variants,
+			&img.AltKo, &img.AltEn, &img.SortOrder, &img.CreatedAt)
+		if err != nil {
+			return nil, err
+		}
+		result[img.ProductID] = append(result[img.ProductID], img)
+	}
+	return result, nil
+}
+
 func (r *ImageRepository) Get(ctx context.Context, id string) (*model.Image, error) {
 	var img model.Image
 	err := r.pool.QueryRow(ctx,

@@ -3,19 +3,6 @@ import { render, screen } from '@testing-library/react';
 import { ProductCard } from '../ProductCard';
 import type { Product } from '@/lib/mock-data';
 
-// Mock framer-motion to avoid animation complexity in tests
-vi.mock('framer-motion', () => ({
-  motion: {
-    div: ({ children, ...props }: React.HTMLAttributes<HTMLDivElement>) => (
-      <div {...props}>{children}</div>
-    ),
-    img: ({ children, initial, animate, transition, whileHover, ...props }: React.ImgHTMLAttributes<HTMLImageElement> & Record<string, unknown>) => (
-      // eslint-disable-next-line @next/next/no-img-element, jsx-a11y/alt-text
-      <img {...props}>{children}</img>
-    ),
-  },
-}));
-
 // Mock the i18n routing Link
 vi.mock('@/lib/i18n/routing', () => ({
   Link: ({ href, children, ...props }: { href: string; children: React.ReactNode }) => (

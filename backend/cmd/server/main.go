@@ -32,7 +32,16 @@ func main() {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	pool, err := pgxpool.New(ctx, cfg.DatabaseURL)
+	poolCfg, err := pgxpool.ParseConfig(cfg.DatabaseURL)
+	if err != nil {
+		log.Fatal().Err(err).Msg("failed to parse database config")
+	}
+	poolCfg.MaxConns = 25
+	poolCfg.MinConns = 2
+	poolCfg.MaxConnLifetime = 30 * time.Minute
+	poolCfg.MaxConnIdleTime = 5 * time.Minute
+
+	pool, err := pgxpool.NewWithConfig(ctx, poolCfg)
 	if err != nil {
 		log.Fatal().Err(err).Msg("failed to connect to database")
 	}
@@ -69,6 +78,7 @@ func main() {
 	r.Use(chimw.Logger)
 	r.Use(chimw.Recoverer)
 	r.Use(chimw.RealIP)
+	r.Use(chimw.Timeout(15 * time.Second))
 
 	corsHandler := cors.New(cors.Options{
 		AllowedOrigins:   cfg.AllowedOrigins,
@@ -120,8 +130,13 @@ func main() {
 
 	addr := fmt.Sprintf(":%s", cfg.Port)
 	srv := &http.Server{
-		Addr:    addr,
-		Handler: r,
+		Addr:              addr,
+		Handler:           r,
+		ReadHeaderTimeout: 10 * time.Second,
+		ReadTimeout:       30 * time.Second,
+		WriteTimeout:      60 * time.Second,
+		IdleTimeout:       120 * time.Second,
+		MaxHeaderBytes:    1 << 20, // 1 MB
 	}
 
 	go func() {

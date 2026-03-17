@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from '@/lib/i18n/routing';
 import { AnimatedImage } from '@/components/ui/AnimatedImage';
 import { formatPrice } from '@/lib/utils';
@@ -39,27 +38,19 @@ export function ProductDetail({ product, locale }: ProductDetailProps) {
           {/* Image column */}
           <div>
             {/* Main image */}
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={activeIndex}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.3 }}
-              >
-                {activeImage && (
-                  <AnimatedImage
-                    src={activeImage.variants.large}
-                    srcSet={`${activeImage.variants.medium} 800w, ${activeImage.variants.large} 1600w`}
-                    sizes="(max-width: 1024px) 100vw, 50vw"
-                    alt={locale === 'en' ? activeImage.alt_en : activeImage.alt_ko}
-                    blur={activeImage.variants.blur}
-                    aspectRatio="4/5"
-                    priority={activeIndex === 0}
-                  />
-                )}
-              </motion.div>
-            </AnimatePresence>
+            <div key={activeIndex} className="heeang-fade-in">
+              {activeImage && (
+                <AnimatedImage
+                  src={activeImage.variants.large}
+                  srcSet={`${activeImage.variants.medium} 800w, ${activeImage.variants.large} 1600w`}
+                  sizes="(max-width: 1024px) 100vw, 50vw"
+                  alt={locale === 'en' ? activeImage.alt_en : activeImage.alt_ko}
+                  blur={activeImage.variants.blur}
+                  aspectRatio="4/5"
+                  priority={activeIndex === 0}
+                />
+              )}
+            </div>
 
             {/* Thumbnail strip — only shown when multiple images */}
             {product.images.length > 1 && (
@@ -85,11 +76,9 @@ export function ProductDetail({ product, locale }: ProductDetailProps) {
           </div>
 
           {/* Info column */}
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
-            className="lg:pt-8"
+          <div
+            className="heeang-enter lg:pt-8"
+            style={{ animationDelay: '150ms' }}
           >
             <h1 className="font-heading text-3xl md:text-4xl font-light tracking-wider text-ink mb-6">
               {title}
@@ -115,7 +104,7 @@ export function ProductDetail({ product, locale }: ProductDetailProps) {
 
                 {product.is_available ? (
                   <Link
-                    href={`/checkout?product=${product.id}` as any}
+                    href={`/checkout?product=${product.id}`}
                     className="inline-block font-body text-xs tracking-[0.2em] uppercase px-8 py-4 border border-ink text-ink hover:bg-ink hover:text-cream transition-colors duration-300"
                   >
                     {locale === 'en' ? 'Buy Now' : '구매하기'}
@@ -134,7 +123,7 @@ export function ProductDetail({ product, locale }: ProductDetailProps) {
                 {locale === 'en' ? 'Art Piece — Not for Sale' : '아트 피스 — 판매 제품 아님'}
               </p>
             )}
-          </motion.div>
+          </div>
         </div>
       </div>
     </div>

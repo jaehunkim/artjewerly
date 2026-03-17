@@ -25,6 +25,8 @@ type OrderItem struct {
 	ProductID string `json:"product_id"`
 	Quantity  int    `json:"quantity"`
 	Price     int    `json:"price"`
+	TitleEn   string `json:"title_en,omitempty"`
+	Currency  string `json:"currency,omitempty"`
 }
 
 type CreateOrderRequest struct {

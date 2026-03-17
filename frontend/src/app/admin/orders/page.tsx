@@ -1,27 +1,13 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { Fragment, useState, useEffect, useCallback } from 'react';
 import { adminFetch } from '@/lib/admin-api';
-
-interface OrderItem {
-  product_id: string;
-  title_en: string;
-  quantity: number;
-  price: number;
-  currency: string;
-}
-
-interface Order {
-  id: string;
-  email: string;
-  total: number;
-  currency: string;
-  status: string;
-  created_at: string;
-  items?: OrderItem[];
-}
-
-const STATUS_OPTIONS = ['pending', 'paid', 'shipped', 'cancelled'];
+import {
+  ADMIN_ORDER_STATUSES,
+  type AdminOrder,
+  type AdminOrderStatus,
+} from '@/lib/admin-types';
+import { formatPrice } from '@/lib/utils';
 
 function formatDate(iso: string): string {
   return new Date(iso).toLocaleDateString('en-US', {
@@ -36,7 +22,7 @@ function truncateId(id: string): string {
 }
 
 export default function AdminOrdersPage() {
-  const [orders, setOrders] = useState<Order[]>([]);
+  const [orders, setOrders] = useState<AdminOrder[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [expanded, setExpanded] = useState<string | null>(null);
@@ -46,7 +32,7 @@ export default function AdminOrdersPage() {
     setLoading(true);
     setError('');
     try {
-      const data = await adminFetch<Order[]>('/api/orders');
+      const data = await adminFetch<AdminOrder[]>('/api/orders');
       setOrders(data ?? []);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load orders');
@@ -59,7 +45,10 @@ export default function AdminOrdersPage() {
     loadOrders();
   }, [loadOrders]);
 
-  async function handleStatusChange(orderId: string, newStatus: string) {
+  async function handleStatusChange(
+    orderId: string,
+    newStatus: AdminOrderStatus
+  ) {
     setUpdatingStatus(orderId);
     try {
       await adminFetch(`/api/orders/${orderId}/status`, {
@@ -80,7 +69,7 @@ export default function AdminOrdersPage() {
     setExpanded((prev) => (prev === orderId ? null : orderId));
   }
 
-  const statusColor: Record<string, string> = {
+  const statusColor: Record<AdminOrderStatus, string> = {
     pending: 'bg-yellow-100 text-yellow-800',
     paid: 'bg-blue-100 text-blue-800',
     shipped: 'bg-green-100 text-green-800',
@@ -147,9 +136,8 @@ export default function AdminOrdersPage() {
                 </tr>
               ) : (
                 orders.map((order) => (
-                  <>
+                  <Fragment key={order.id}>
                     <tr
-                      key={order.id}
                       onClick={() => toggleExpand(order.id)}
                       className="border-b border-gray-100 hover:bg-gray-50 transition-colors cursor-pointer"
                     >
@@ -158,9 +146,7 @@ export default function AdminOrdersPage() {
                       </td>
                       <td className="px-4 py-3 text-gray-700">{order.email}</td>
                       <td className="px-4 py-3 text-gray-700">
-                        {order.currency === 'KRW'
-                          ? `₩${order.total.toLocaleString()}`
-                          : `$${order.total.toFixed(2)}`}
+                        {formatPrice(order.total, order.currency)}
                       </td>
                       <td className="px-4 py-3 text-gray-500 text-xs uppercase">
                         {order.currency}
@@ -170,16 +156,19 @@ export default function AdminOrdersPage() {
                           value={order.status}
                           onClick={(e) => e.stopPropagation()}
                           onChange={(e) =>
-                            handleStatusChange(order.id, e.target.value)
+                            handleStatusChange(
+                              order.id,
+                              e.target.value as AdminOrderStatus
+                            )
                           }
                           disabled={updatingStatus === order.id}
                           className={`text-xs font-medium px-2 py-1 rounded border-0 focus:outline-none focus:ring-1 focus:ring-gray-400 disabled:opacity-50 ${
-                            statusColor[order.status] ?? 'bg-gray-100 text-gray-600'
+                            statusColor[order.status]
                           }`}
                         >
-                          {STATUS_OPTIONS.map((s) => (
-                            <option key={s} value={s}>
-                              {s.charAt(0).toUpperCase() + s.slice(1)}
+                          {ADMIN_ORDER_STATUSES.map((status) => (
+                            <option key={status} value={status}>
+                              {status.charAt(0).toUpperCase() + status.slice(1)}
                             </option>
                           ))}
                         </select>
@@ -214,9 +203,7 @@ export default function AdminOrdersPage() {
                                       <td className="py-0.5">{item.title_en}</td>
                                       <td className="py-0.5">{item.quantity}</td>
                                       <td className="py-0.5">
-                                        {item.currency === 'KRW'
-                                          ? `₩${item.price.toLocaleString()}`
-                                          : `$${item.price.toFixed(2)}`}
+                                        {formatPrice(item.price, item.currency)}
                                       </td>
                                     </tr>
                                   ))}
@@ -229,7 +216,7 @@ export default function AdminOrdersPage() {
                         </td>
                       </tr>
                     )}
-                  </>
+                  </Fragment>
                 ))
               )}
             </tbody>

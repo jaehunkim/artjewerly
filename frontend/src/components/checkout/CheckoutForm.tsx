@@ -1,5 +1,6 @@
 'use client';
 
+import dynamic from 'next/dynamic';
 import { useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { useRouter } from '@/lib/i18n/routing';
@@ -9,10 +10,18 @@ import {
   createTossPayment,
   type CreateOrderPayload,
 } from '@/lib/api';
-import { StripePayment } from './StripePayment';
-import { TossPayment } from './TossPayment';
 import type { Product } from '@/lib/mock-data';
 import { formatPrice } from '@/lib/utils';
+
+const StripePayment = dynamic(
+  () => import('./StripePayment').then((module) => module.StripePayment),
+  { ssr: false }
+);
+
+const TossPayment = dynamic(
+  () => import('./TossPayment').then((module) => module.TossPayment),
+  { ssr: false }
+);
 
 interface CheckoutFormProps {
   product: Product;
@@ -107,7 +116,7 @@ export function CheckoutForm({ product, locale }: CheckoutFormProps) {
 
   const handleStripeSuccess = () => {
     if (stripeOrderId) {
-      router.push(`/order/${stripeOrderId}` as any);
+      router.push(`/order/${stripeOrderId}`);
     }
   };
 

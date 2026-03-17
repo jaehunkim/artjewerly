@@ -6,9 +6,16 @@ import (
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/google/uuid"
 	"github.com/jaehunkim/heeang-api/internal/model"
 	"github.com/jaehunkim/heeang-api/internal/service"
 )
+
+// isValidUUID checks whether s is a valid UUID string.
+func isValidUUID(s string) bool {
+	_, err := uuid.Parse(s)
+	return err == nil
+}
 
 type productServicer interface {
 	List(ctx context.Context, category string) ([]model.Product, error)
@@ -59,6 +66,10 @@ func (h *ProductHandler) List(w http.ResponseWriter, r *http.Request) {
 
 func (h *ProductHandler) Get(w http.ResponseWriter, r *http.Request) {
 	id := chi.URLParam(r, "id")
+	if !isValidUUID(id) {
+		respondError(w, http.StatusBadRequest, "invalid product id")
+		return
+	}
 
 	w.Header().Set("Cache-Control", "public, max-age=300, stale-while-revalidate=3600")
 
@@ -87,6 +98,10 @@ func (h *ProductHandler) Create(w http.ResponseWriter, r *http.Request) {
 
 func (h *ProductHandler) Update(w http.ResponseWriter, r *http.Request) {
 	id := chi.URLParam(r, "id")
+	if !isValidUUID(id) {
+		respondError(w, http.StatusBadRequest, "invalid product id")
+		return
+	}
 	var req model.UpdateProductRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		respondError(w, http.StatusBadRequest, "invalid request body")
@@ -103,6 +118,10 @@ func (h *ProductHandler) Update(w http.ResponseWriter, r *http.Request) {
 
 func (h *ProductHandler) Delete(w http.ResponseWriter, r *http.Request) {
 	id := chi.URLParam(r, "id")
+	if !isValidUUID(id) {
+		respondError(w, http.StatusBadRequest, "invalid product id")
+		return
+	}
 	if err := h.svc.Delete(r.Context(), id); err != nil {
 		respondError(w, http.StatusInternalServerError, err.Error())
 		return

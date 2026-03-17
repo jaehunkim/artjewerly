@@ -10,7 +10,7 @@ output "r2_bucket_name" {
 
 output "r2_public_url" {
   description = "R2 public URL (configure public access via dashboard)"
-  value       = "https://pub-${var.account_id}.r2.dev"
+  value       = var.r2_public_url != "" ? var.r2_public_url : "https://pub-${var.account_id}.r2.dev"
 }
 
 # Note: R2 API tokens for S3 compatibility need to be created via dashboard

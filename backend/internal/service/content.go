@@ -16,9 +16,23 @@ func NewContentService(repo *repository.ContentRepository) *ContentService {
 }
 
 func (s *ContentService) Get(ctx context.Context, page string) (*model.SiteContent, error) {
-	return s.repo.Get(ctx, page)
+	normalizedPage, err := model.NormalizeContentPage(page)
+	if err != nil {
+		return nil, err
+	}
+
+	return s.repo.Get(ctx, normalizedPage)
 }
 
 func (s *ContentService) Update(ctx context.Context, page string, req *model.UpdateContentRequest) (*model.SiteContent, error) {
-	return s.repo.Upsert(ctx, page, req)
+	normalizedPage, err := model.NormalizeContentPage(page)
+	if err != nil {
+		return nil, err
+	}
+
+	if err := req.Validate(); err != nil {
+		return nil, err
+	}
+
+	return s.repo.Upsert(ctx, normalizedPage, req)
 }

@@ -3,30 +3,28 @@
 import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { adminFetch } from '@/lib/admin-api';
+import {
+  ADMIN_PRODUCT_CATEGORIES,
+  type AdminProductCategoryFilter,
+  type AdminProductSummary,
+} from '@/lib/admin-types';
+import { formatPrice } from '@/lib/utils';
 
-interface Product {
-  id: string;
-  category: string;
-  title_ko: string;
-  title_en: string;
-  price_krw: number;
-  price_usd?: number;
-  is_available: boolean;
-  images: { url: string }[];
-}
+const CATEGORY_FILTER_OPTIONS = ['all', ...ADMIN_PRODUCT_CATEGORIES] as const;
 
 export default function AdminProductsPage() {
-  const [products, setProducts] = useState<Product[]>([]);
+  const [products, setProducts] = useState<AdminProductSummary[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [categoryFilter, setCategoryFilter] = useState('all');
+  const [categoryFilter, setCategoryFilter] =
+    useState<AdminProductCategoryFilter>('all');
   const [deleting, setDeleting] = useState<string | null>(null);
 
   const loadProducts = useCallback(async () => {
     setLoading(true);
     setError('');
     try {
-      const data = await adminFetch<Product[]>('/api/products');
+      const data = await adminFetch<AdminProductSummary[]>('/api/products');
       setProducts(data ?? []);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load products');
@@ -71,17 +69,17 @@ export default function AdminProductsPage() {
 
       {/* Category filter */}
       <div className="flex gap-2 mb-4">
-        {['all', 'art', 'sale'].map((cat) => (
+        {CATEGORY_FILTER_OPTIONS.map((category) => (
           <button
-            key={cat}
-            onClick={() => setCategoryFilter(cat)}
+            key={category}
+            onClick={() => setCategoryFilter(category)}
             className={`px-3 py-1 text-sm rounded border transition-colors ${
-              categoryFilter === cat
+              categoryFilter === category
                 ? 'bg-gray-900 text-white border-gray-900'
                 : 'bg-white text-gray-600 border-gray-300 hover:border-gray-500'
             }`}
           >
-            {cat.charAt(0).toUpperCase() + cat.slice(1)}
+            {category.charAt(0).toUpperCase() + category.slice(1)}
           </button>
         ))}
       </div>
@@ -171,10 +169,10 @@ export default function AdminProductsPage() {
                       </span>
                     </td>
                     <td className="px-4 py-3 text-gray-700">
-                      ₩{product.price_krw?.toLocaleString()}
+                      {formatPrice(product.price_krw, 'KRW')}
                       {product.price_usd != null && (
                         <div className="text-gray-400 text-xs">
-                          ${product.price_usd}
+                          {formatPrice(product.price_usd, 'USD')}
                         </div>
                       )}
                     </td>
