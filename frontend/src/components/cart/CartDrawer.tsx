@@ -1,4 +1,5 @@
 'use client';
+// TODO: Cart item rendering is duplicated between CartDrawer and cart/page.tsx - consider extracting a shared CartItem component
 
 import { useEffect } from 'react';
 import { useCartStore } from '@/store/cart';

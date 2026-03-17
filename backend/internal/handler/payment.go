@@ -49,8 +49,8 @@ func (h *PaymentHandler) CreateTossPayment(w http.ResponseWriter, r *http.Reques
 		SuccessURL string `json:"success_url"`
 		FailURL    string `json:"fail_url"`
 	}
-	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
-		respondError(w, http.StatusBadRequest, "invalid request")
+	if err := decodeJSONBody(w, r, &body, maxRequestBodySize); err != nil {
+		respondError(w, http.StatusBadRequest, err.Error())
 		return
 	}
 
@@ -80,10 +80,15 @@ func (h *PaymentHandler) StripeWebhook(w http.ResponseWriter, r *http.Request) {
 
 	if event.Type == "payment_intent.succeeded" {
 		var pi stripe.PaymentIntent
-		if err := json.Unmarshal(event.Data.Raw, &pi); err == nil {
-			orderID := pi.Metadata["order_id"]
-			if orderID != "" {
-				h.svc.HandleStripeWebhook(r.Context(), pi.ID, orderID)
+		if err := json.Unmarshal(event.Data.Raw, &pi); err != nil {
+			http.Error(w, "failed to parse payment intent", http.StatusInternalServerError)
+			return
+		}
+		orderID := pi.Metadata["order_id"]
+		if orderID != "" {
+			if err := h.svc.HandleStripeWebhook(r.Context(), pi.ID, orderID); err != nil {
+				http.Error(w, "failed to process webhook", http.StatusInternalServerError)
+				return
 			}
 		}
 	}
@@ -97,12 +102,12 @@ func (h *PaymentHandler) TossWebhook(w http.ResponseWriter, r *http.Request) {
 		PaymentKey string `json:"paymentKey"`
 		Amount     int    `json:"amount"`
 	}
-	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
-		respondError(w, http.StatusBadRequest, "invalid request")
+	if err := decodeJSONBody(w, r, &body, maxRequestBodySize); err != nil {
+		respondError(w, http.StatusBadRequest, err.Error())
 		return
 	}
 
-	if err := h.svc.HandleTossConfirm(r.Context(), body.OrderID, body.PaymentKey); err != nil {
+	if err := h.svc.HandleTossConfirm(r.Context(), body.OrderID, body.PaymentKey, body.Amount); err != nil {
 		respondError(w, http.StatusInternalServerError, err.Error())
 		return
 	}

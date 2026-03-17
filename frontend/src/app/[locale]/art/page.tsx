@@ -1,3 +1,4 @@
+// TODO: Art list/detail pages are near-duplicates of shop pages - consider unifying into a shared component
 import { mockArtProducts } from '@/lib/mock-data';
 import { fetchProducts } from '@/lib/api';
 import { ProductGrid } from '@/components/product/ProductGrid';
@@ -14,7 +15,8 @@ export default async function ArtPage({ params }: ArtPageProps) {
   let products;
   try {
     products = await fetchProducts('art');
-  } catch {
+  } catch (e) {
+    console.warn('[heeang] API fallback:', e);
     products = mockArtProducts;
   }
 

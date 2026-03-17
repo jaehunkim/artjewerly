@@ -195,6 +195,7 @@ func TestProductHandler_Create_returns400OnInvalidRequestBody(t *testing.T) {
 	h := &ProductHandler{svc: &mockProductService{}}
 
 	req := httptest.NewRequest(http.MethodPost, "/products", bytes.NewBufferString("not-json{{{"))
+	req.Header.Set("Content-Type", "application/json")
 	rr := httptest.NewRecorder()
 	h.Create(rr, req)
 
@@ -247,6 +248,7 @@ func TestProductHandler_Update_returns400OnInvalidRequestBody(t *testing.T) {
 
 	req := httptest.NewRequest(http.MethodPut, "/products/"+testUUID1, bytes.NewBufferString("{bad json"))
 	req = withChiParam(req, "id", testUUID1)
+	req.Header.Set("Content-Type", "application/json")
 	rr := httptest.NewRecorder()
 	h.Update(rr, req)
 

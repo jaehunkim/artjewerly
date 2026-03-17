@@ -15,7 +15,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       fetchProducts('art'),
       fetchProducts('sale'),
     ]);
-  } catch {
+  } catch (e) {
+    console.warn('[heeang] API fallback:', e);
     artProducts = mockArtProducts;
     shopProducts = mockShopProducts;
   }

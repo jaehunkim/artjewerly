@@ -2,20 +2,12 @@ package handler
 
 import (
 	"context"
-	"encoding/json"
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
-	"github.com/google/uuid"
 	"github.com/jaehunkim/heeang-api/internal/model"
 	"github.com/jaehunkim/heeang-api/internal/service"
 )
-
-// isValidUUID checks whether s is a valid UUID string.
-func isValidUUID(s string) bool {
-	_, err := uuid.Parse(s)
-	return err == nil
-}
 
 type productServicer interface {
 	List(ctx context.Context, category string) ([]model.Product, error)
@@ -31,24 +23,6 @@ type ProductHandler struct {
 
 func NewProductHandler(svc *service.ProductService) *ProductHandler {
 	return &ProductHandler{svc: svc}
-}
-
-func respondJSON(w http.ResponseWriter, status int, data interface{}) {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(status)
-	json.NewEncoder(w).Encode(map[string]interface{}{
-		"data":  data,
-		"error": nil,
-	})
-}
-
-func respondError(w http.ResponseWriter, status int, msg string) {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(status)
-	json.NewEncoder(w).Encode(map[string]interface{}{
-		"data":  nil,
-		"error": msg,
-	})
 }
 
 func (h *ProductHandler) List(w http.ResponseWriter, r *http.Request) {
@@ -83,8 +57,8 @@ func (h *ProductHandler) Get(w http.ResponseWriter, r *http.Request) {
 
 func (h *ProductHandler) Create(w http.ResponseWriter, r *http.Request) {
 	var req model.CreateProductRequest
-	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-		respondError(w, http.StatusBadRequest, "invalid request body")
+	if err := decodeJSONBody(w, r, &req, maxRequestBodySize); err != nil {
+		respondError(w, http.StatusBadRequest, err.Error())
 		return
 	}
 
@@ -103,8 +77,8 @@ func (h *ProductHandler) Update(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	var req model.UpdateProductRequest
-	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-		respondError(w, http.StatusBadRequest, "invalid request body")
+	if err := decodeJSONBody(w, r, &req, maxRequestBodySize); err != nil {
+		respondError(w, http.StatusBadRequest, err.Error())
 		return
 	}
 

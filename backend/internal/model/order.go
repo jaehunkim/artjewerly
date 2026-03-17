@@ -2,6 +2,8 @@ package model
 
 import (
 	"encoding/json"
+	"errors"
+	"fmt"
 	"time"
 )
 
@@ -40,4 +42,25 @@ type CreateOrderRequest struct {
 type OrderItemRequest struct {
 	ProductID string `json:"product_id"`
 	Quantity  int    `json:"quantity"`
+}
+
+var (
+	ErrEmptyOrderItems   = errors.New("items must not be empty")
+	ErrInvalidQuantity   = errors.New("quantity must be greater than zero")
+	ErrInvalidCurrency   = errors.New("currency must be KRW or USD")
+)
+
+func (r *CreateOrderRequest) Validate() error {
+	if len(r.Items) == 0 {
+		return ErrEmptyOrderItems
+	}
+	for i, item := range r.Items {
+		if item.Quantity <= 0 {
+			return fmt.Errorf("item %d: %w", i, ErrInvalidQuantity)
+		}
+	}
+	if r.Currency != "KRW" && r.Currency != "USD" {
+		return ErrInvalidCurrency
+	}
+	return nil
 }

@@ -1,8 +1,12 @@
 package service
 
 import (
+	"bytes"
 	"context"
+	"encoding/json"
 	"fmt"
+	"io"
+	"net/http"
 
 	"github.com/stripe/stripe-go/v82"
 	"github.com/stripe/stripe-go/v82/paymentintent"
@@ -81,7 +85,34 @@ func (s *PaymentService) HandleStripeWebhook(ctx context.Context, paymentIntentI
 	return s.orderRepo.UpdatePayment(ctx, orderID, "stripe", paymentIntentID, "paid")
 }
 
-// HandleTossConfirm updates order status after a successful Toss payment.
-func (s *PaymentService) HandleTossConfirm(ctx context.Context, orderID, paymentKey string) error {
+// HandleTossConfirm verifies the payment with Toss confirm API, then updates order status.
+func (s *PaymentService) HandleTossConfirm(ctx context.Context, orderID, paymentKey string, amount int) error {
+	// Call Toss confirm API to verify the payment before marking as paid.
+	confirmBody, _ := json.Marshal(map[string]interface{}{
+		"paymentKey": paymentKey,
+		"orderId":    orderID,
+		"amount":     amount,
+	})
+
+	req, err := http.NewRequestWithContext(ctx, http.MethodPost,
+		"https://api.tosspayments.com/v1/payments/confirm",
+		bytes.NewReader(confirmBody))
+	if err != nil {
+		return fmt.Errorf("build toss confirm request: %w", err)
+	}
+	req.Header.Set("Content-Type", "application/json")
+	req.SetBasicAuth(s.cfg.TossSecretKey, "")
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return fmt.Errorf("toss confirm request failed: %w", err)
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		body, _ := io.ReadAll(io.LimitReader(resp.Body, 1024))
+		return fmt.Errorf("toss confirm rejected (status %d): %s", resp.StatusCode, string(body))
+	}
+
 	return s.orderRepo.UpdatePayment(ctx, orderID, "toss", paymentKey, "paid")
 }

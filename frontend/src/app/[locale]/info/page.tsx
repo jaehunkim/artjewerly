@@ -1,12 +1,24 @@
+import { fetchApi } from '@/lib/api';
 import { PageTransition } from '@/components/ui/PageTransition';
 
 export const revalidate = 3600;
+
+interface InfoContent {
+  title: string;
+  subtitle: string;
+  story: string[];
+  contactTitle: string;
+  contactNote: string;
+  email: string;
+  instagram: string;
+  location: string;
+}
 
 interface InfoPageProps {
   params: Promise<{ locale: string }>;
 }
 
-const brandStory = {
+const brandStory: Record<string, InfoContent> = {
   ko: {
     title: 'HEEANG',
     subtitle: '아트 주얼리',
@@ -41,7 +53,17 @@ const brandStory = {
 
 export default async function InfoPage({ params }: InfoPageProps) {
   const { locale } = await params;
-  const content = locale === 'en' ? brandStory.en : brandStory.ko;
+  const fallback = locale === 'en' ? brandStory.en : brandStory.ko;
+
+  let content: InfoContent;
+  try {
+    content = await fetchApi<InfoContent>(`/api/content/info?lang=${locale}`, {
+      revalidate: 3600,
+    });
+  } catch (e) {
+    console.warn('[heeang] API fallback for /api/content/info:', e);
+    content = fallback;
+  }
 
   return (
     <PageTransition>

@@ -22,7 +22,6 @@ type StorageService struct {
 	client     *s3.Client
 	presigner  *s3.PresignClient
 	bucketName string
-	publicURL  string
 }
 
 func NewStorageService(cfg *config.Config) *StorageService {
@@ -45,7 +44,6 @@ func NewStorageService(cfg *config.Config) *StorageService {
 		client:     client,
 		presigner:  presigner,
 		bucketName: cfg.R2BucketName,
-		publicURL:  cfg.R2PublicURL,
 	}
 }
 
@@ -64,10 +62,6 @@ func (s *StorageService) GeneratePresignedURL(ctx context.Context, productID str
 		UploadURL: presignedReq.URL,
 		R2Key:     key,
 	}, nil
-}
-
-func (s *StorageService) GetPublicURL(key string) string {
-	return fmt.Sprintf("%s/%s", s.publicURL, key)
 }
 
 func (s *StorageService) DeleteImageAndVariants(ctx context.Context, originalKey string, variantsJSON json.RawMessage) error {

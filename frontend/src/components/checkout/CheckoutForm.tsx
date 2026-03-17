@@ -64,6 +64,10 @@ export function CheckoutForm({ items, locale }: CheckoutFormProps) {
   // Toss state
   const [tossParams, setTossParams] = useState<TossParams | null>(null);
 
+  // Prices displayed here come from the cart's cached Product snapshots and may be stale.
+  // The backend recalculates the actual total from current DB prices when the order is
+  // created (see backend/internal/repository/order.go#fetchProductPrices), so the
+  // charged amount is always correct even if the UI shows an outdated price.
   const totalPrice = items.reduce((sum, i) => sum + (i.product.price ?? 0) * i.quantity, 0);
   const currency = items[0]?.product.currency ?? 'KRW';
 

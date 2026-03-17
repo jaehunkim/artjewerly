@@ -1,4 +1,4 @@
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
+import { API_BASE_URL as API_BASE } from './api';
 
 function getAuthHeader(): string {
   if (typeof window === 'undefined') return '';

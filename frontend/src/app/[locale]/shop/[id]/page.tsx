@@ -25,7 +25,8 @@ export async function generateStaticParams() {
   try {
     const products = await fetchProducts('sale');
     return products.map((p) => ({ id: p.id }));
-  } catch {
+  } catch (e) {
+    console.warn('[heeang] API fallback:', e);
     return mockShopProducts.map((p) => ({ id: p.id }));
   }
 }
@@ -36,7 +37,8 @@ export default async function ShopDetailPage({ params }: ShopDetailPageProps) {
   let product;
   try {
     product = await fetchProduct(id);
-  } catch {
+  } catch (e) {
+    console.warn('[heeang] API fallback:', e);
     product = getProduct(id);
   }
 

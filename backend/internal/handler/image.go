@@ -1,10 +1,11 @@
 package handler
 
 import (
-	"encoding/json"
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/rs/zerolog/log"
+
 	"github.com/jaehunkim/heeang-api/internal/model"
 	"github.com/jaehunkim/heeang-api/internal/repository"
 	"github.com/jaehunkim/heeang-api/internal/service"
@@ -43,20 +44,25 @@ func (h *ImageHandler) Presign(w http.ResponseWriter, r *http.Request) {
 
 func (h *ImageHandler) Create(w http.ResponseWriter, r *http.Request) {
 	var req model.CreateImageRequest
-	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-		respondError(w, http.StatusBadRequest, "invalid request body")
+	if err := decodeJSONBody(w, r, &req, maxRequestBodySize); err != nil {
+		respondError(w, http.StatusBadRequest, err.Error())
 		return
 	}
 
 	// Generate image variants
-	variants, err := h.imagingSvc.GenerateVariants(r.Context(), req.R2Key, req.ProductID)
+	variants, err := h.imagingSvc.GenerateVariants(r.Context(), req.R2Key)
 	if err != nil {
 		respondError(w, http.StatusInternalServerError, "failed to generate image variants: "+err.Error())
 		return
 	}
 
-	image, err := h.repo.Create(r.Context(), &req, variants.ToJSON())
+	variantsJSON := variants.ToJSON()
+	image, err := h.repo.Create(r.Context(), &req, variantsJSON)
 	if err != nil {
+		// Best-effort cleanup of uploaded variants on DB insert failure.
+		if cleanupErr := h.storageSvc.DeleteImageAndVariants(r.Context(), req.R2Key, variantsJSON); cleanupErr != nil {
+			log.Warn().Err(cleanupErr).Str("r2_key", req.R2Key).Msg("failed to clean up uploaded variants after DB insert failure")
+		}
 		respondError(w, http.StatusInternalServerError, err.Error())
 		return
 	}

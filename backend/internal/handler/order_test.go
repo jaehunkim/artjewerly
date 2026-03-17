@@ -106,7 +106,8 @@ func TestOrderHandler_CreateReturns500WithoutLeakingInternalError(t *testing.T) 
 		},
 	}}
 
-	req := httptest.NewRequest(http.MethodPost, "/orders", bytes.NewBufferString(`{"email":"x@example.com"}`))
+	req := httptest.NewRequest(http.MethodPost, "/orders", bytes.NewBufferString(`{"email":"x@example.com","items":[{"product_id":"p1","quantity":1}],"currency":"KRW"}`))
+	req.Header.Set("Content-Type", "application/json")
 	rr := httptest.NewRecorder()
 
 	h.Create(rr, req)
@@ -147,6 +148,7 @@ func TestOrderHandler_UpdateStatusReturns404WhenOrderMissing(t *testing.T) {
 
 	req := httptest.NewRequest(http.MethodPut, "/orders/"+testUUID1+"/status", bytes.NewBufferString(`{"status":"paid"}`))
 	req = withChiParam(req, "id", testUUID1)
+	req.Header.Set("Content-Type", "application/json")
 	rr := httptest.NewRecorder()
 
 	h.UpdateStatus(rr, req)

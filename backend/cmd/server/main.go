@@ -60,7 +60,7 @@ func main() {
 	// Services
 	storageSvc := service.NewStorageService(cfg)
 	imagingSvc := service.NewImagingService(storageSvc)
-	productSvc := service.NewProductService(productRepo, imageRepo)
+	productSvc := service.NewProductService(productRepo, imageRepo, storageSvc)
 	orderSvc := service.NewOrderService(orderRepo)
 	paymentSvc := service.NewPaymentService(cfg, orderRepo)
 	contentSvc := service.NewContentService(contentRepo)

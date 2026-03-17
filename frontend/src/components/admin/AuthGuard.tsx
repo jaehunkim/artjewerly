@@ -1,8 +1,11 @@
+// TODO: Auth uses sessionStorage to store Base64-encoded credentials (Basic Auth).
+// This is vulnerable to XSS — any injected script can read sessionStorage and
+// exfiltrate the credentials. Migrate to HttpOnly cookie-based auth or a
+// token-based flow where secrets are never accessible to client-side JS.
 'use client';
 
 import { useState, useEffect, ReactNode } from 'react';
-
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
+import { API_BASE_URL as API_BASE } from '@/lib/api';
 
 interface AuthGuardProps {
   children: ReactNode;

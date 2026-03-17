@@ -1,3 +1,6 @@
+// TODO: Admin pages (products, orders, content) duplicate the same
+// useEffect+fetch+loading+error scaffolding. Extract a shared useAdminFetch
+// hook or a generic data-fetching wrapper to reduce boilerplate.
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';

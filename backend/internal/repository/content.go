@@ -31,7 +31,10 @@ func (r *ContentRepository) Upsert(ctx context.Context, page string, req *model.
 	err := r.pool.QueryRow(ctx,
 		`INSERT INTO site_content (page, content_ko, content_en)
 		VALUES ($1, $2, $3)
-		ON CONFLICT (page) DO UPDATE SET content_ko = $2, content_en = $3, updated_at = NOW()
+		ON CONFLICT (page) DO UPDATE SET
+			content_ko = COALESCE($2, site_content.content_ko),
+			content_en = COALESCE($3, site_content.content_en),
+			updated_at = NOW()
 		RETURNING id, page, content_ko, content_en, updated_at`,
 		page, req.ContentKo, req.ContentEn).Scan(
 		&c.ID, &c.Page, &c.ContentKo, &c.ContentEn, &c.UpdatedAt)

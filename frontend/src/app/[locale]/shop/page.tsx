@@ -14,7 +14,8 @@ export default async function ShopPage({ params }: ShopPageProps) {
   let products;
   try {
     products = await fetchProducts('sale');
-  } catch {
+  } catch (e) {
+    console.warn('[heeang] API fallback:', e);
     products = mockShopProducts;
   }
 

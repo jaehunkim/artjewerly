@@ -7,6 +7,8 @@ interface HomePageProps {
   params: Promise<{ locale: string }>;
 }
 
+// TODO: Hero background image uses picsum.photos placeholder. Replace with a
+// real hero image asset (e.g. stored in /public or served from a CDN).
 export default async function HomePage({ params }: HomePageProps) {
   const { locale } = await params;
 

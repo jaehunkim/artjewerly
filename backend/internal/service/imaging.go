@@ -32,7 +32,7 @@ var variantConfigs = []variantConfig{
 	{name: "large", width: 1600},
 }
 
-func (s *ImagingService) GenerateVariants(ctx context.Context, originalKey string, productID string) (*model.ImageVariants, error) {
+func (s *ImagingService) GenerateVariants(ctx context.Context, originalKey string) (*model.ImageVariants, error) {
 	// Download original image
 	data, err := s.storage.DownloadBytes(ctx, originalKey)
 	if err != nil {
@@ -59,8 +59,8 @@ func (s *ImagingService) GenerateVariants(ctx context.Context, originalKey strin
 			return nil, fmt.Errorf("encode %s: %w", vc.name, err)
 		}
 
-		key := fmt.Sprintf("%s/%s.webp", basePath, vc.name)
-		if err := s.storage.UploadBytes(ctx, key, buf.Bytes(), "image/webp"); err != nil {
+		key := fmt.Sprintf("%s/%s.png", basePath, vc.name)
+		if err := s.storage.UploadBytes(ctx, key, buf.Bytes(), "image/png"); err != nil {
 			return nil, fmt.Errorf("upload %s: %w", vc.name, err)
 		}
 
