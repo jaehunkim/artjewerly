@@ -4,11 +4,14 @@ import { useTranslations } from 'next-intl';
 import { Link, usePathname } from '@/lib/i18n/routing';
 import { useState } from 'react';
 import { LanguageSwitcher } from '@/components/ui/LanguageSwitcher';
+import { useCartStore } from '@/store/cart';
 
 export function Sidebar() {
   const t = useTranslations('nav');
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const { openDrawer, totalItems } = useCartStore();
+  const cartCount = totalItems();
 
   const navLinks = [
     { href: '/art' as const, label: t('artJewelry') },
@@ -55,7 +58,19 @@ export function Sidebar() {
             ))}
           </nav>
         </div>
-        <LanguageSwitcher />
+        <div className="space-y-4">
+          <button
+            onClick={openDrawer}
+            className="relative font-heading text-xs tracking-widest text-warm-400 hover:text-ink transition-colors"
+            aria-label="Open cart"
+          >
+            Cart
+            {cartCount > 0 && (
+              <span className="ml-1 text-[10px] text-ink">({cartCount})</span>
+            )}
+          </button>
+          <LanguageSwitcher />
+        </div>
       </aside>
 
       {/* Mobile overlay menu */}

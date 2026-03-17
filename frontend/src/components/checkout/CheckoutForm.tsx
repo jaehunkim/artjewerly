@@ -10,7 +10,7 @@ import {
   createTossPayment,
   type CreateOrderPayload,
 } from '@/lib/api';
-import type { Product } from '@/lib/mock-data';
+import { useCartStore, type CartItem } from '@/store/cart';
 import { formatPrice } from '@/lib/utils';
 
 const StripePayment = dynamic(
@@ -24,7 +24,7 @@ const TossPayment = dynamic(
 );
 
 interface CheckoutFormProps {
-  product: Product;
+  items: CartItem[];
   locale: string;
 }
 
@@ -38,9 +38,10 @@ interface TossParams {
   failUrl: string;
 }
 
-export function CheckoutForm({ product, locale }: CheckoutFormProps) {
+export function CheckoutForm({ items, locale }: CheckoutFormProps) {
   const t = useTranslations('checkout');
   const router = useRouter();
+  const clearCart = useCartStore((s) => s.clearCart);
 
   const defaultMethod: PaymentMethod = locale === 'ko' ? 'toss' : 'stripe';
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>(defaultMethod);
@@ -62,9 +63,8 @@ export function CheckoutForm({ product, locale }: CheckoutFormProps) {
   // Toss state
   const [tossParams, setTossParams] = useState<TossParams | null>(null);
 
-  const title = locale === 'en' ? product.title_en : product.title_ko;
-  const price = product.price ?? 0;
-  const currency = product.currency;
+  const totalPrice = items.reduce((sum, i) => sum + (i.product.price ?? 0) * i.quantity, 0);
+  const currency = items[0]?.product.currency ?? 'KRW';
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -81,7 +81,7 @@ export function CheckoutForm({ product, locale }: CheckoutFormProps) {
           detail_address: detailAddress,
           zipcode,
         },
-        items: [{ product_id: product.id, quantity: 1 }],
+        items: items.map((i) => ({ product_id: i.productId, quantity: i.quantity })),
         currency: currency === 'KRW' ? 'KRW' : 'USD',
         lang: locale,
       };
@@ -97,7 +97,7 @@ export function CheckoutForm({ product, locale }: CheckoutFormProps) {
         const result = await createTossPayment(
           order.id,
           `${origin}/${locale}/order/${order.id}`,
-          `${origin}/${locale}/checkout?product=${product.id}&error=payment_failed`
+          `${origin}/${locale}/checkout?error=payment_failed`
         );
         setTossParams({
           orderId: result.orderId,
@@ -116,6 +116,7 @@ export function CheckoutForm({ product, locale }: CheckoutFormProps) {
 
   const handleStripeSuccess = () => {
     if (stripeOrderId) {
+      clearCart();
       router.push(`/order/${stripeOrderId}`);
     }
   };
@@ -158,9 +159,29 @@ export function CheckoutForm({ product, locale }: CheckoutFormProps) {
         <p className="font-body text-xs tracking-widest uppercase text-warm-400 mb-4">
           {t('orderSummary')}
         </p>
-        <div className="flex justify-between items-center">
-          <p className="font-body text-sm text-ink">{title}</p>
-          <p className="font-body text-sm text-ink">{formatPrice(price, currency)}</p>
+        <div className="space-y-3">
+          {items.map((item) => {
+            const itemTitle = locale === 'en' ? item.product.title_en : item.product.title_ko;
+            const itemPrice = item.product.price ?? 0;
+            return (
+              <div key={item.productId} className="flex justify-between items-center">
+                <p className="font-body text-sm text-ink">
+                  {itemTitle}{item.quantity > 1 && ` × ${item.quantity}`}
+                </p>
+                <p className="font-body text-sm text-ink">
+                  {formatPrice(itemPrice * item.quantity, item.product.currency)}
+                </p>
+              </div>
+            );
+          })}
+          {items.length > 1 && (
+            <div className="flex justify-between items-center pt-3 border-t border-warm-200">
+              <p className="font-body text-xs tracking-wider text-warm-400 uppercase">
+                {locale === 'ko' ? '합계' : 'Total'}
+              </p>
+              <p className="font-body text-sm text-ink">{formatPrice(totalPrice, currency)}</p>
+            </div>
+          )}
         </div>
       </div>
 

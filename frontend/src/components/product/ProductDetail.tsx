@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Link } from '@/lib/i18n/routing';
 import { AnimatedImage } from '@/components/ui/AnimatedImage';
 import { formatPrice } from '@/lib/utils';
+import { useCartStore } from '@/store/cart';
 import type { Product } from '@/lib/mock-data';
 
 interface ProductDetailProps {
@@ -13,6 +14,12 @@ interface ProductDetailProps {
 
 export function ProductDetail({ product, locale }: ProductDetailProps) {
   const [activeIndex, setActiveIndex] = useState(0);
+  const { addItem, openDrawer } = useCartStore();
+
+  const handleAddToCart = () => {
+    addItem(product);
+    openDrawer();
+  };
 
   const title = locale === 'en' ? product.title_en : product.title_ko;
   const description =
@@ -103,12 +110,12 @@ export function ProductDetail({ product, locale }: ProductDetailProps) {
                 </div>
 
                 {product.is_available ? (
-                  <Link
-                    href={`/checkout?product=${product.id}`}
+                  <button
+                    onClick={handleAddToCart}
                     className="inline-block font-body text-xs tracking-[0.2em] uppercase px-8 py-4 border border-ink text-ink hover:bg-ink hover:text-cream transition-colors duration-300"
                   >
-                    {locale === 'en' ? 'Buy Now' : '구매하기'}
-                  </Link>
+                    {locale === 'en' ? 'Add to Cart' : '장바구니 담기'}
+                  </button>
                 ) : (
                   <p className="font-body text-xs tracking-widest uppercase text-warm-300">
                     {locale === 'en' ? 'Sold Out' : '품절'}

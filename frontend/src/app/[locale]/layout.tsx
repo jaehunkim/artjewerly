@@ -4,6 +4,7 @@ import { getMessages } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import { routing } from '@/lib/i18n/routing';
 import { Sidebar } from '@/components/layout/Sidebar';
+import { CartDrawer } from '@/components/cart/CartDrawer';
 import { fontVariables } from '@/app/layout';
 
 const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://heeang.com';
@@ -63,6 +64,7 @@ export default async function LocaleLayout({
         <NextIntlClientProvider messages={messages}>
           <div className="flex min-h-screen">
             <Sidebar />
+            <CartDrawer />
             <main className="flex-1 ml-0 md:ml-[140px]">
               {children}
             </main>
