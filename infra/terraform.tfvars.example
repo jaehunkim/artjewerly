@@ -1,41 +1,35 @@
-# GCP
-gcp_project_id = "your-gcp-project-id"
-gcp_region     = "asia-northeast3"  # Seoul
-container_port = 8080
+# OCI Authentication
+# Find these in OCI Console → Profile → API Keys
+oci_tenancy_ocid     = "ocid1.tenancy.oc1..xxxxxxxxxxxxxxxxxxxx"
+oci_user_ocid        = "ocid1.user.oc1..xxxxxxxxxxxxxxxxxxxx"
+oci_fingerprint      = "xx:xx:xx:xx:xx:xx:xx:xx:xx:xx:xx:xx:xx:xx:xx:xx"
+oci_private_key_path = "~/.oci/oci_api_key.pem"
+oci_region           = "ap-chuncheon-1"
 
-# Cloud Run
-min_instance_count           = 0
-max_instance_count           = 2
-cpu_limit                    = "1"
-memory_limit                 = "512Mi"
+# OCI Instance
+# Find compartment OCID in OCI Console → Identity → Compartments
+oci_compartment_id      = "ocid1.compartment.oc1..xxxxxxxxxxxxxxxxxxxx"
+# Find availability domain in OCI Console → Compute → Instances → Create Instance
+oci_availability_domain = "IiAS:AP-CHUNCHEON-1-AD-1"
+ssh_public_key          = "ssh-rsa AAAA... user@host"
+ocpus                   = 2    # Free tier allows up to 4 total OCPUs across A1 instances
+memory_in_gbs           = 12   # Free tier allows up to 24 GB total across A1 instances
 
 # Cloudflare
-cloudflare_api_token  = "your-cf-api-token"
-cloudflare_account_id = "your-cf-account-id"
-cloudflare_zone_id    = ""  # Optional: for custom domain
-cloudflare_pages_production_branch = "main"
-cloudflare_pages_build_command     = "npm run build"
-cloudflare_pages_destination_dir   = ".vercel/output/static"
-cloudflare_pages_root_dir          = "frontend"
-cloudflare_r2_bucket_location      = "APAC"
-cloudflare_r2_public_url           = ""  # Optional: public/custom domain override
+cloudflare_api_token  = "your-cloudflare-api-token"
+cloudflare_account_id = "your-cloudflare-account-id"
+cloudflare_zone_id    = ""     # Optional: Cloudflare zone ID for custom domain DNS
+cloudflare_r2_public_url = ""  # Optional: custom domain for R2 bucket public access
 
-# Neon
-neon_api_key        = "your-neon-api-key"
-neon_region         = "aws-ap-northeast-2"
-database_name       = "heeang"
-autoscaling_min_cu  = 0.25
-autoscaling_max_cu  = 0.25
+# R2 API credentials (create via Cloudflare Dashboard → R2 → Manage R2 API Tokens)
+r2_access_key = ""
+r2_secret_key = ""
 
 # App
 app_name       = "heeang-jewelry"
-environment    = "production"
+domain_name    = "heeang.com"   # Your custom domain (leave empty if none)
 admin_password = "changeme-in-production"
-common_labels = {
-  team  = "heeang"
-  stack = "web"
-}
 
-# Payment (optional for MVP)
+# Payment (optional)
 stripe_secret_key = ""
 toss_secret_key   = ""

@@ -1,31 +1,27 @@
 terraform {
   required_version = ">= 1.5"
-
   required_providers {
-    google = {
-      source  = "hashicorp/google"
-      version = "~> 5.0"
+    oci = {
+      source  = "oracle/oci"
+      version = "~> 6.0"
     }
-    cloudflare = {
-      source  = "cloudflare/cloudflare"
-      version = "~> 4.0"
-    }
-    neon = {
-      source  = "kislerdm/neon"
-      version = "~> 0.6"
-    }
+    # Uncomment when Cloudflare module is enabled
+    # cloudflare = {
+    #   source  = "cloudflare/cloudflare"
+    #   version = "~> 4.0"
+    # }
   }
 }
 
-provider "google" {
-  project = var.gcp_project_id
-  region  = var.gcp_region
+provider "oci" {
+  tenancy_ocid     = var.oci_tenancy_ocid
+  user_ocid        = var.oci_user_ocid
+  fingerprint      = var.oci_fingerprint
+  private_key_path = var.oci_private_key_path
+  region           = var.oci_region
 }
 
-provider "cloudflare" {
-  api_token = var.cloudflare_api_token
-}
-
-provider "neon" {
-  api_key = var.neon_api_key
-}
+# Uncomment when Cloudflare module is enabled
+# provider "cloudflare" {
+#   api_token = var.cloudflare_api_token
+# }

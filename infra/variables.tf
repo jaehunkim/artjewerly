@@ -1,128 +1,112 @@
-# GCP
-variable "gcp_project_id" {
-  description = "GCP project ID"
+# OCI Authentication
+variable "oci_tenancy_ocid" {
+  description = "OCI tenancy OCID"
   type        = string
 }
 
-variable "gcp_region" {
-  description = "GCP region for Cloud Run"
+variable "oci_user_ocid" {
+  description = "OCI user OCID"
   type        = string
-  default     = "asia-northeast3"
 }
 
-variable "container_port" {
-  description = "Port the Cloud Run container listens on"
-  type        = number
-  default     = 8080
+variable "oci_fingerprint" {
+  description = "OCI API key fingerprint"
+  type        = string
 }
 
-variable "min_instance_count" {
-  description = "Minimum number of Cloud Run instances"
-  type        = number
-  default     = 0
+variable "oci_private_key_path" {
+  description = "Path to OCI API private key PEM file"
+  type        = string
 }
 
-variable "max_instance_count" {
-  description = "Maximum number of Cloud Run instances"
+variable "oci_region" {
+  description = "OCI region (e.g. ap-chuncheon-1)"
+  type        = string
+  default     = "ap-chuncheon-1"
+}
+
+# OCI Instance
+variable "oci_compartment_id" {
+  description = "OCI compartment OCID where resources will be created"
+  type        = string
+}
+
+variable "oci_availability_domain" {
+  description = "OCI availability domain (e.g. IiAS:AP-CHUNCHEON-1-AD-1)"
+  type        = string
+}
+
+variable "ssh_public_key" {
+  description = "SSH public key for VM access"
+  type        = string
+}
+
+variable "ocpus" {
+  description = "Number of OCPUs for A1.Flex instance (max 4 on free tier)"
   type        = number
   default     = 2
 }
 
-variable "cpu_limit" {
-  description = "CPU limit for each Cloud Run instance (e.g. '1', '2')"
-  type        = string
-  default     = "1"
+variable "memory_in_gbs" {
+  description = "Memory in GBs for A1.Flex instance (max 24 on free tier)"
+  type        = number
+  default     = 12
 }
 
-variable "memory_limit" {
-  description = "Memory limit for each Cloud Run instance (e.g. '512Mi', '1Gi')"
-  type        = string
-  default     = "512Mi"
-}
+# Cloudflare / R2 (uncomment cloudflare vars when enabling Cloudflare module)
+# variable "cloudflare_api_token" {
+#   description = "Cloudflare API token"
+#   type        = string
+#   sensitive   = true
+# }
+#
+# variable "cloudflare_account_id" {
+#   description = "Cloudflare account ID"
+#   type        = string
+# }
+#
+# variable "cloudflare_zone_id" {
+#   description = "Cloudflare zone ID (optional, required for custom domain DNS)"
+#   type        = string
+#   default     = ""
+# }
+#
+# variable "cloudflare_r2_public_url" {
+#   description = "Optional override for the public R2 bucket URL"
+#   type        = string
+#   default     = ""
+# }
 
-# Cloudflare
-variable "cloudflare_api_token" {
-  description = "Cloudflare API token"
-  type        = string
-  sensitive   = true
-}
-
-variable "cloudflare_account_id" {
-  description = "Cloudflare account ID"
-  type        = string
-}
-
-variable "cloudflare_zone_id" {
-  description = "Cloudflare zone ID (optional, for custom domain)"
+variable "r2_account_id" {
+  description = "Cloudflare account ID for R2 S3-compatible API"
   type        = string
   default     = ""
 }
 
-variable "cloudflare_pages_production_branch" {
-  description = "Production branch for the Cloudflare Pages project"
+variable "r2_access_key" {
+  description = "R2 S3-compatible access key (create via Cloudflare dashboard)"
   type        = string
-  default     = "main"
-}
-
-variable "cloudflare_pages_build_command" {
-  description = "Build command used by Cloudflare Pages"
-  type        = string
-  default     = "npm run build"
-}
-
-variable "cloudflare_pages_destination_dir" {
-  description = "Build output directory for Cloudflare Pages"
-  type        = string
-  default     = ".vercel/output/static"
-}
-
-variable "cloudflare_pages_root_dir" {
-  description = "Root directory for the frontend project in Cloudflare Pages"
-  type        = string
-  default     = "frontend"
-}
-
-variable "cloudflare_r2_bucket_location" {
-  description = "Location hint for the Cloudflare R2 bucket"
-  type        = string
-  default     = "APAC"
-}
-
-variable "cloudflare_r2_public_url" {
-  description = "Optional override for the public R2 bucket URL"
-  type        = string
+  sensitive   = true
   default     = ""
 }
 
-# Neon
-variable "neon_api_key" {
-  description = "Neon API key"
+variable "r2_secret_key" {
+  description = "R2 S3-compatible secret key (create via Cloudflare dashboard)"
   type        = string
   sensitive   = true
+  default     = ""
 }
 
-variable "neon_region" {
-  description = "Neon region ID (e.g. aws-ap-northeast-2 for Seoul)"
+variable "r2_bucket_name" {
+  description = "R2 bucket name for image storage"
   type        = string
-  default     = "aws-ap-northeast-2"
+  default     = "heeang-images"
 }
 
-variable "database_name" {
-  description = "Name of the application database"
+variable "r2_public_url" {
+  description = "R2 public URL for image access"
   type        = string
-  default     = "heeang"
-}
-
-variable "autoscaling_min_cu" {
-  description = "Minimum compute units for Neon autoscaling"
-  type        = number
-  default     = 0.25
-}
-
-variable "autoscaling_max_cu" {
-  description = "Maximum compute units for Neon autoscaling"
-  type        = number
-  default     = 0.25
+  default     = ""
 }
 
 # App
@@ -132,20 +116,14 @@ variable "app_name" {
   default     = "heeang-jewelry"
 }
 
-variable "environment" {
-  description = "Deployment environment (e.g. production, staging)"
+variable "domain_name" {
+  description = "Domain name for the application (e.g. heeang.com)"
   type        = string
-  default     = "production"
-}
-
-variable "common_labels" {
-  description = "Additional labels applied to label-supporting resources"
-  type        = map(string)
-  default     = {}
+  default     = ""
 }
 
 variable "admin_password" {
-  description = "Admin password for API"
+  description = "Admin password for API and database"
   type        = string
   sensitive   = true
 }

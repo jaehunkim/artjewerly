@@ -1,6 +1,9 @@
 package config
 
-import "os"
+import (
+	"os"
+	"strings"
+)
 
 type Config struct {
 	Port            string
@@ -22,7 +25,7 @@ func Load() *Config {
 		Port:            getEnv("PORT", "8080"),
 		DatabaseURL:     getEnv("DATABASE_URL", "postgres://postgres:postgres@localhost:5432/heeang?sslmode=disable"),
 		AdminPassword:   getEnv("ADMIN_PASSWORD", "admin"),
-		AllowedOrigins:  []string{getEnv("ALLOWED_ORIGIN", "http://localhost:3000")},
+		AllowedOrigins:  parseOrigins(getEnv("ALLOWED_ORIGINS", "http://localhost:3000,http://jhdesktop:3000,http://100.76.9.1:3000")),
 		R2AccountID:     getEnv("R2_ACCOUNT_ID", ""),
 		R2AccessKeyID:   getEnv("R2_ACCESS_KEY_ID", ""),
 		R2SecretKey:     getEnv("R2_SECRET_KEY", ""),
@@ -32,6 +35,14 @@ func Load() *Config {
 		StripeWebhookSecret: getEnv("STRIPE_WEBHOOK_SECRET", ""),
 		TossSecretKey:       getEnv("TOSS_SECRET_KEY", ""),
 	}
+}
+
+func parseOrigins(s string) []string {
+	origins := strings.Split(s, ",")
+	for i := range origins {
+		origins[i] = strings.TrimSpace(origins[i])
+	}
+	return origins
 }
 
 func getEnv(key, fallback string) string {

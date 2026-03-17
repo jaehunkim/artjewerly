@@ -1,23 +1,16 @@
-# Cloudflare Pages project
-resource "cloudflare_pages_project" "frontend" {
-  account_id        = var.account_id
-  name              = var.app_name
-  production_branch = var.production_branch
-
-  build_config {
-    build_command   = var.build_command
-    destination_dir = var.destination_dir
-    root_dir        = var.root_dir
-  }
-}
-
 # R2 bucket for images
 resource "cloudflare_r2_bucket" "images" {
   account_id = var.account_id
   name       = "${var.app_name}-images"
-  location   = var.r2_bucket_location
+  location   = "APAC"
 }
 
-# Note: R2 public access and CORS are configured via the Cloudflare dashboard
-# or API since Terraform support for R2 public access is limited.
-# The r2_public_url output assumes public access is enabled manually or via API.
+# DNS record pointing to Oracle VM (proxied for CDN)
+resource "cloudflare_record" "app" {
+  count   = var.zone_id != "" ? 1 : 0
+  zone_id = var.zone_id
+  name    = var.domain_name
+  content = var.vm_public_ip
+  type    = "A"
+  proxied = true
+}
