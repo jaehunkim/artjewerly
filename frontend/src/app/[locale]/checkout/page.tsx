@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation';
 import { getTranslations } from 'next-intl/server';
 import { getProduct } from '@/lib/mock-data';
+import { fetchProduct } from '@/lib/api';
 import { CheckoutForm } from '@/components/checkout/CheckoutForm';
 import { PageTransition } from '@/components/ui/PageTransition';
 import { Link } from '@/lib/i18n/routing';
@@ -16,7 +17,12 @@ export default async function CheckoutPage({ params, searchParams }: CheckoutPag
 
   if (!productId) notFound();
 
-  const product = getProduct(productId);
+  let product;
+  try {
+    product = await fetchProduct(productId);
+  } catch {
+    product = getProduct(productId);
+  }
   if (!product || product.price === null || !product.is_available) notFound();
 
   const t = await getTranslations('checkout');

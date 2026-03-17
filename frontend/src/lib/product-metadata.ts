@@ -1,11 +1,17 @@
 import type { Metadata } from 'next';
 import { getProduct } from '@/lib/mock-data';
+import { fetchProduct } from '@/lib/api';
 
 /**
  * Shared metadata generator for product detail pages (art and shop).
  */
-export function buildProductMetadata(locale: string, id: string): Metadata {
-  const product = getProduct(id);
+export async function buildProductMetadata(locale: string, id: string): Promise<Metadata> {
+  let product;
+  try {
+    product = await fetchProduct(id);
+  } catch {
+    product = getProduct(id);
+  }
   if (!product) return {};
 
   const isKo = locale === 'ko';

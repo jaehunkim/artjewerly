@@ -70,6 +70,21 @@ export interface OrderItem {
   price: number;
 }
 
+// ── Product API ──
+
+import type { Product } from './mock-data';
+
+export async function fetchProducts(category?: 'art' | 'sale'): Promise<Product[]> {
+  const query = category ? `?category=${category}` : '';
+  return fetchApi<Product[]>(`/api/products${query}`, { revalidate: 300 });
+}
+
+export async function fetchProduct(id: string): Promise<Product> {
+  return fetchApi<Product>(`/api/products/${id}`, { revalidate: 300 });
+}
+
+// ── Order API ──
+
 export async function createOrder(payload: CreateOrderPayload): Promise<Order> {
   return fetchApi<Order>('/api/orders', {
     method: 'POST',

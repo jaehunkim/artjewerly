@@ -1,4 +1,5 @@
 import { mockShopProducts } from '@/lib/mock-data';
+import { fetchProducts } from '@/lib/api';
 import { ProductGrid } from '@/components/product/ProductGrid';
 import { PageTransition } from '@/components/ui/PageTransition';
 
@@ -10,6 +11,12 @@ interface ShopPageProps {
 
 export default async function ShopPage({ params }: ShopPageProps) {
   const { locale } = await params;
+  let products;
+  try {
+    products = await fetchProducts('sale');
+  } catch {
+    products = mockShopProducts;
+  }
 
   return (
     <PageTransition>
@@ -22,7 +29,7 @@ export default async function ShopPage({ params }: ShopPageProps) {
           <div className="mt-3 mx-auto w-6 h-px bg-warm-300" />
         </div>
 
-        <ProductGrid products={mockShopProducts} locale={locale} />
+        <ProductGrid products={products} locale={locale} />
       </div>
     </PageTransition>
   );

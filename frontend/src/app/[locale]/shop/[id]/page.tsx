@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getProduct, mockShopProducts } from '@/lib/mock-data';
+import { fetchProduct, fetchProducts } from '@/lib/api';
 import { buildProductMetadata } from '@/lib/product-metadata';
 import { ProductDetail } from '@/components/product/ProductDetail';
 import { PageTransition } from '@/components/ui/PageTransition';
@@ -21,12 +22,23 @@ interface ShopDetailPageProps {
 }
 
 export async function generateStaticParams() {
-  return mockShopProducts.map((p) => ({ id: p.id }));
+  try {
+    const products = await fetchProducts('sale');
+    return products.map((p) => ({ id: p.id }));
+  } catch {
+    return mockShopProducts.map((p) => ({ id: p.id }));
+  }
 }
 
 export default async function ShopDetailPage({ params }: ShopDetailPageProps) {
   const { locale, id } = await params;
-  const product = getProduct(id);
+
+  let product;
+  try {
+    product = await fetchProduct(id);
+  } catch {
+    product = getProduct(id);
+  }
 
   if (!product || product.category !== 'sale') {
     notFound();
