@@ -8,12 +8,7 @@ import { useLocale } from 'next-intl';
 
 export function CartDrawer() {
   const locale = useLocale();
-  const { items, isDrawerOpen, closeDrawer, removeItem, totalPrice, hydrate } = useCartStore();
-
-  // Hydrate cart from localStorage on mount
-  useEffect(() => {
-    hydrate();
-  }, [hydrate]);
+  const { items, isDrawerOpen, closeDrawer, removeItem, totalPrice } = useCartStore();
   const isKo = locale === 'ko';
 
   // Close on escape key

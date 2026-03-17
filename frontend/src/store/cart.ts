@@ -1,6 +1,7 @@
 'use client';
 
 import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
 import type { Product } from '@/lib/mock-data';
 
 export interface CartItem {
@@ -19,65 +20,49 @@ interface CartState {
   closeDrawer: () => void;
   totalItems: () => number;
   totalPrice: () => number;
-  hydrate: () => void;
 }
 
-function saveToStorage(items: CartItem[]) {
-  try {
-    localStorage.setItem('heeang-cart', JSON.stringify(items));
-  } catch {}
-}
+export const useCartStore = create<CartState>()(
+  persist(
+    (set, get) => ({
+      items: [],
+      isDrawerOpen: false,
 
-function loadFromStorage(): CartItem[] {
-  try {
-    const raw = localStorage.getItem('heeang-cart');
-    return raw ? JSON.parse(raw) : [];
-  } catch {
-    return [];
-  }
-}
+      addItem: (product: Product) => {
+        set((state) => {
+          const existing = state.items.find((i) => i.productId === product.id);
+          if (existing) {
+            return {
+              items: state.items.map((i) =>
+                i.productId === product.id
+                  ? { ...i, quantity: i.quantity + 1 }
+                  : i
+              ),
+            };
+          }
+          return {
+            items: [...state.items, { productId: product.id, quantity: 1, product }],
+          };
+        });
+      },
 
-export const useCartStore = create<CartState>()((set, get) => ({
-  items: [],
-  isDrawerOpen: false,
+      removeItem: (productId: string) => {
+        set((state) => ({
+          items: state.items.filter((i) => i.productId !== productId),
+        }));
+      },
 
-  hydrate: () => {
-    set({ items: loadFromStorage() });
-  },
+      clearCart: () => set({ items: [] }),
+      openDrawer: () => set({ isDrawerOpen: true }),
+      closeDrawer: () => set({ isDrawerOpen: false }),
 
-  addItem: (product: Product) => {
-    set((state) => {
-      const existing = state.items.find((i) => i.productId === product.id);
-      let newItems;
-      if (existing) {
-        newItems = state.items.map((i) =>
-          i.productId === product.id ? { ...i, quantity: i.quantity + 1 } : i
-        );
-      } else {
-        newItems = [...state.items, { productId: product.id, quantity: 1, product }];
-      }
-      saveToStorage(newItems);
-      return { items: newItems };
-    });
-  },
-
-  removeItem: (productId: string) => {
-    set((state) => {
-      const newItems = state.items.filter((i) => i.productId !== productId);
-      saveToStorage(newItems);
-      return { items: newItems };
-    });
-  },
-
-  clearCart: () => {
-    saveToStorage([]);
-    set({ items: [] });
-  },
-
-  openDrawer: () => set({ isDrawerOpen: true }),
-  closeDrawer: () => set({ isDrawerOpen: false }),
-
-  totalItems: () => get().items.reduce((sum, i) => sum + i.quantity, 0),
-  totalPrice: () =>
-    get().items.reduce((sum, i) => sum + (i.product.price ?? 0) * i.quantity, 0),
-}));
+      totalItems: () => get().items.reduce((sum, i) => sum + i.quantity, 0),
+      totalPrice: () =>
+        get().items.reduce((sum, i) => sum + (i.product.price ?? 0) * i.quantity, 0),
+    }),
+    {
+      name: 'heeang-cart',
+      partialize: (state) => ({ items: state.items }),
+    }
+  )
+);
