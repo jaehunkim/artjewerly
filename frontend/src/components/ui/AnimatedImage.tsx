@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
+import { useState } from 'react';
 
 interface AnimatedImageProps {
   src: string;
@@ -24,14 +24,13 @@ export function AnimatedImage({
   priority = false,
 }: AnimatedImageProps) {
   const [loaded, setLoaded] = useState(false);
-  const imgRef = useRef<HTMLImageElement>(null);
 
-  // Handle already-cached images that fire load before React mounts
-  useEffect(() => {
-    if (imgRef.current?.complete) {
+  // Callback ref: handle already-cached images that fire load before React mounts
+  const imgRef = (node: HTMLImageElement | null) => {
+    if (node?.complete) {
       setLoaded(true);
     }
-  }, []);
+  };
 
   return (
     <div
