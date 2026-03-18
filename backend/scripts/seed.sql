@@ -1,5 +1,5 @@
 -- Seed artworks from leapofeveryday.com
--- Generated: 2026-03-18 v2 (fixed title splitting)
+-- Generated: 2026-03-18 v3 (exact 1:1 image mapping)
 
 -- Clear existing data
 DELETE FROM order_items;
@@ -26,8 +26,8 @@ WITH new_product AS (
   RETURNING id
 )
 INSERT INTO images (id, product_id, r2_key, variants, alt_ko, alt_en, sort_order)
-SELECT gen_random_uuid(), id, 'local/08_Spores 4_Hee-ang Kim.c42fc92f.jpg',
-  '{"thumbnail": "/images/artworks/08_Spores 4_Hee-ang Kim.c42fc92f.jpg", "medium": "/images/artworks/08_Spores 4_Hee-ang Kim.c42fc92f.jpg", "large": "/images/artworks/08_Spores 4_Hee-ang Kim.c42fc92f.jpg", "blur": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAFCAYAAABirU3bAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAP0lEQVR4nGNgYPj/n4EBCBgZGf8zMDL+Z2Bk/M/AxPCfgZHhPwMjE8N/BkYmhv8MTMwMIJaAJIAsAUkAAQYAVKoMY1l8tycAAAAASUVORK5CYII="}'::jsonb,
+SELECT gen_random_uuid(), id, 'local/08_Spore 2 Hee-ang Kim.8ef8d6cb.jpg',
+  '{"thumbnail": "/images/artworks/08_Spore 2 Hee-ang Kim.8ef8d6cb.jpg", "medium": "/images/artworks/08_Spore 2 Hee-ang Kim.8ef8d6cb.jpg", "large": "/images/artworks/08_Spore 2 Hee-ang Kim.8ef8d6cb.jpg", "blur": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAFCAYAAABirU3bAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAP0lEQVR4nGNgYPj/n4EBCBgZGf8zMDL+Z2Bk/M/AxPCfgZHhPwMjE8N/BkYmhv8MTMwMIJaAJIAsAUkAAQYAVKoMY1l8tycAAAAASUVORK5CYII="}'::jsonb,
   '포자들 2 Spores 2', '2 Spores 2', 0
 FROM new_product;
 
@@ -38,8 +38,8 @@ WITH new_product AS (
   RETURNING id
 )
 INSERT INTO images (id, product_id, r2_key, variants, alt_ko, alt_en, sort_order)
-SELECT gen_random_uuid(), id, 'local/08_Spores 4_Hee-ang Kim.c42fc92f.jpg',
-  '{"thumbnail": "/images/artworks/08_Spores 4_Hee-ang Kim.c42fc92f.jpg", "medium": "/images/artworks/08_Spores 4_Hee-ang Kim.c42fc92f.jpg", "large": "/images/artworks/08_Spores 4_Hee-ang Kim.c42fc92f.jpg", "blur": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAFCAYAAABirU3bAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAP0lEQVR4nGNgYPj/n4EBCBgZGf8zMDL+Z2Bk/M/AxPCfgZHhPwMjE8N/BkYmhv8MTMwMIJaAJIAsAUkAAQYAVKoMY1l8tycAAAAASUVORK5CYII="}'::jsonb,
+SELECT gen_random_uuid(), id, 'local/08_Spore 1_Hee-ang Kim.18c100f1.jpg',
+  '{"thumbnail": "/images/artworks/08_Spore 1_Hee-ang Kim.18c100f1.jpg", "medium": "/images/artworks/08_Spore 1_Hee-ang Kim.18c100f1.jpg", "large": "/images/artworks/08_Spore 1_Hee-ang Kim.18c100f1.jpg", "blur": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAFCAYAAABirU3bAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAP0lEQVR4nGNgYPj/n4EBCBgZGf8zMDL+Z2Bk/M/AxPCfgZHhPwMjE8N/BkYmhv8MTMwMIJaAJIAsAUkAAQYAVKoMY1l8tycAAAAASUVORK5CYII="}'::jsonb,
   '포자들 1 Spores 1', '1 Spores 1', 0
 FROM new_product;
 
@@ -50,8 +50,8 @@ WITH new_product AS (
   RETURNING id
 )
 INSERT INTO images (id, product_id, r2_key, variants, alt_ko, alt_en, sort_order)
-SELECT gen_random_uuid(), id, 'local/08_Spores 4_Hee-ang Kim.c42fc92f.jpg',
-  '{"thumbnail": "/images/artworks/08_Spores 4_Hee-ang Kim.c42fc92f.jpg", "medium": "/images/artworks/08_Spores 4_Hee-ang Kim.c42fc92f.jpg", "large": "/images/artworks/08_Spores 4_Hee-ang Kim.c42fc92f.jpg", "blur": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAFCAYAAABirU3bAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAP0lEQVR4nGNgYPj/n4EBCBgZGf8zMDL+Z2Bk/M/AxPCfgZHhPwMjE8N/BkYmhv8MTMwMIJaAJIAsAUkAAQYAVKoMY1l8tycAAAAASUVORK5CYII="}'::jsonb,
+SELECT gen_random_uuid(), id, 'local/08_Spore 3_Hee-ang Kim.d7a67356.jpg',
+  '{"thumbnail": "/images/artworks/08_Spore 3_Hee-ang Kim.d7a67356.jpg", "medium": "/images/artworks/08_Spore 3_Hee-ang Kim.d7a67356.jpg", "large": "/images/artworks/08_Spore 3_Hee-ang Kim.d7a67356.jpg", "blur": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAFCAYAAABirU3bAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAP0lEQVR4nGNgYPj/n4EBCBgZGf8zMDL+Z2Bk/M/AxPCfgZHhPwMjE8N/BkYmhv8MTMwMIJaAJIAsAUkAAQYAVKoMY1l8tycAAAAASUVORK5CYII="}'::jsonb,
   '포자들 3 Spores 3', '3 Spores 3', 0
 FROM new_product;
 
@@ -62,8 +62,8 @@ WITH new_product AS (
   RETURNING id
 )
 INSERT INTO images (id, product_id, r2_key, variants, alt_ko, alt_en, sort_order)
-SELECT gen_random_uuid(), id, 'local/01_Re-form-4_Hee-ang-Kim.c0046ff6.jpg',
-  '{"thumbnail": "/images/artworks/01_Re-form-4_Hee-ang-Kim.c0046ff6.jpg", "medium": "/images/artworks/01_Re-form-4_Hee-ang-Kim.c0046ff6.jpg", "large": "/images/artworks/01_Re-form-4_Hee-ang-Kim.c0046ff6.jpg", "blur": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAFCAYAAABirU3bAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAP0lEQVR4nGNgYPj/n4EBCBgZGf8zMDL+Z2Bk/M/AxPCfgZHhPwMjE8N/BkYmhv8MTMwMIJaAJIAsAUkAAQYAVKoMY1l8tycAAAAASUVORK5CYII="}'::jsonb,
+SELECT gen_random_uuid(), id, 'local/08_Re-form 6_Hee-ang Kim.47ea5d3d.jpg',
+  '{"thumbnail": "/images/artworks/08_Re-form 6_Hee-ang Kim.47ea5d3d.jpg", "medium": "/images/artworks/08_Re-form 6_Hee-ang Kim.47ea5d3d.jpg", "large": "/images/artworks/08_Re-form 6_Hee-ang Kim.47ea5d3d.jpg", "blur": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAFCAYAAABirU3bAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAP0lEQVR4nGNgYPj/n4EBCBgZGf8zMDL+Z2Bk/M/AxPCfgZHhPwMjE8N/BkYmhv8MTMwMIJaAJIAsAUkAAQYAVKoMY1l8tycAAAAASUVORK5CYII="}'::jsonb,
   '재구성된 형태 6 Re-form 6', '6 Re-form 6', 0
 FROM new_product;
 
@@ -74,8 +74,8 @@ WITH new_product AS (
   RETURNING id
 )
 INSERT INTO images (id, product_id, r2_key, variants, alt_ko, alt_en, sort_order)
-SELECT gen_random_uuid(), id, 'local/04_Wavy 4_Hee-ang Kim.0360d0a3.jpg',
-  '{"thumbnail": "/images/artworks/04_Wavy 4_Hee-ang Kim.0360d0a3.jpg", "medium": "/images/artworks/04_Wavy 4_Hee-ang Kim.0360d0a3.jpg", "large": "/images/artworks/04_Wavy 4_Hee-ang Kim.0360d0a3.jpg", "blur": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAFCAYAAABirU3bAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAP0lEQVR4nGNgYPj/n4EBCBgZGf8zMDL+Z2Bk/M/AxPCfgZHhPwMjE8N/BkYmhv8MTMwMIJaAJIAsAUkAAQYAVKoMY1l8tycAAAAASUVORK5CYII="}'::jsonb,
+SELECT gen_random_uuid(), id, 'local/07_Wavy 3_Hee-ang Kim.cc349393.jpg',
+  '{"thumbnail": "/images/artworks/07_Wavy 3_Hee-ang Kim.cc349393.jpg", "medium": "/images/artworks/07_Wavy 3_Hee-ang Kim.cc349393.jpg", "large": "/images/artworks/07_Wavy 3_Hee-ang Kim.cc349393.jpg", "blur": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAFCAYAAABirU3bAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAP0lEQVR4nGNgYPj/n4EBCBgZGf8zMDL+Z2Bk/M/AxPCfgZHhPwMjE8N/BkYmhv8MTMwMIJaAJIAsAUkAAQYAVKoMY1l8tycAAAAASUVORK5CYII="}'::jsonb,
   'Wavy 3', 'Wavy 3', 0
 FROM new_product;
 
@@ -86,8 +86,8 @@ WITH new_product AS (
   RETURNING id
 )
 INSERT INTO images (id, product_id, r2_key, variants, alt_ko, alt_en, sort_order)
-SELECT gen_random_uuid(), id, 'local/04_Wavy 4_Hee-ang Kim.0360d0a3.jpg',
-  '{"thumbnail": "/images/artworks/04_Wavy 4_Hee-ang Kim.0360d0a3.jpg", "medium": "/images/artworks/04_Wavy 4_Hee-ang Kim.0360d0a3.jpg", "large": "/images/artworks/04_Wavy 4_Hee-ang Kim.0360d0a3.jpg", "blur": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAFCAYAAABirU3bAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAP0lEQVR4nGNgYPj/n4EBCBgZGf8zMDL+Z2Bk/M/AxPCfgZHhPwMjE8N/BkYmhv8MTMwMIJaAJIAsAUkAAQYAVKoMY1l8tycAAAAASUVORK5CYII="}'::jsonb,
+SELECT gen_random_uuid(), id, 'local/07_Wavy 1 _Hee-ang Kim.bbe10166.jpg',
+  '{"thumbnail": "/images/artworks/07_Wavy 1 _Hee-ang Kim.bbe10166.jpg", "medium": "/images/artworks/07_Wavy 1 _Hee-ang Kim.bbe10166.jpg", "large": "/images/artworks/07_Wavy 1 _Hee-ang Kim.bbe10166.jpg", "blur": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAFCAYAAABirU3bAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAP0lEQVR4nGNgYPj/n4EBCBgZGf8zMDL+Z2Bk/M/AxPCfgZHhPwMjE8N/BkYmhv8MTMwMIJaAJIAsAUkAAQYAVKoMY1l8tycAAAAASUVORK5CYII="}'::jsonb,
   'Wavy 1', 'Wavy 1', 0
 FROM new_product;
 
@@ -98,8 +98,8 @@ WITH new_product AS (
   RETURNING id
 )
 INSERT INTO images (id, product_id, r2_key, variants, alt_ko, alt_en, sort_order)
-SELECT gen_random_uuid(), id, 'local/01_Re-form-4_Hee-ang-Kim.c0046ff6.jpg',
-  '{"thumbnail": "/images/artworks/01_Re-form-4_Hee-ang-Kim.c0046ff6.jpg", "medium": "/images/artworks/01_Re-form-4_Hee-ang-Kim.c0046ff6.jpg", "large": "/images/artworks/01_Re-form-4_Hee-ang-Kim.c0046ff6.jpg", "blur": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAFCAYAAABirU3bAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAP0lEQVR4nGNgYPj/n4EBCBgZGf8zMDL+Z2Bk/M/AxPCfgZHhPwMjE8N/BkYmhv8MTMwMIJaAJIAsAUkAAQYAVKoMY1l8tycAAAAASUVORK5CYII="}'::jsonb,
+SELECT gen_random_uuid(), id, 'local/07_Re-form 3_Hee-ang Kim.f2c6862c.jpg',
+  '{"thumbnail": "/images/artworks/07_Re-form 3_Hee-ang Kim.f2c6862c.jpg", "medium": "/images/artworks/07_Re-form 3_Hee-ang Kim.f2c6862c.jpg", "large": "/images/artworks/07_Re-form 3_Hee-ang Kim.f2c6862c.jpg", "blur": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAFCAYAAABirU3bAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAP0lEQVR4nGNgYPj/n4EBCBgZGf8zMDL+Z2Bk/M/AxPCfgZHhPwMjE8N/BkYmhv8MTMwMIJaAJIAsAUkAAQYAVKoMY1l8tycAAAAASUVORK5CYII="}'::jsonb,
   '재구성된 형태 3 Re-form 3', '3 Re-form 3', 0
 FROM new_product;
 
@@ -110,8 +110,8 @@ WITH new_product AS (
   RETURNING id
 )
 INSERT INTO images (id, product_id, r2_key, variants, alt_ko, alt_en, sort_order)
-SELECT gen_random_uuid(), id, 'local/04_Wavy 4_Hee-ang Kim.0360d0a3.jpg',
-  '{"thumbnail": "/images/artworks/04_Wavy 4_Hee-ang Kim.0360d0a3.jpg", "medium": "/images/artworks/04_Wavy 4_Hee-ang Kim.0360d0a3.jpg", "large": "/images/artworks/04_Wavy 4_Hee-ang Kim.0360d0a3.jpg", "blur": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAFCAYAAABirU3bAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAP0lEQVR4nGNgYPj/n4EBCBgZGf8zMDL+Z2Bk/M/AxPCfgZHhPwMjE8N/BkYmhv8MTMwMIJaAJIAsAUkAAQYAVKoMY1l8tycAAAAASUVORK5CYII="}'::jsonb,
+SELECT gen_random_uuid(), id, 'local/07_Wavy 2 _Hee-ang Kim.d3e59112.jpg',
+  '{"thumbnail": "/images/artworks/07_Wavy 2 _Hee-ang Kim.d3e59112.jpg", "medium": "/images/artworks/07_Wavy 2 _Hee-ang Kim.d3e59112.jpg", "large": "/images/artworks/07_Wavy 2 _Hee-ang Kim.d3e59112.jpg", "blur": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAFCAYAAABirU3bAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAP0lEQVR4nGNgYPj/n4EBCBgZGf8zMDL+Z2Bk/M/AxPCfgZHhPwMjE8N/BkYmhv8MTMwMIJaAJIAsAUkAAQYAVKoMY1l8tycAAAAASUVORK5CYII="}'::jsonb,
   'Wavy 2', 'Wavy 2', 0
 FROM new_product;
 
@@ -122,8 +122,8 @@ WITH new_product AS (
   RETURNING id
 )
 INSERT INTO images (id, product_id, r2_key, variants, alt_ko, alt_en, sort_order)
-SELECT gen_random_uuid(), id, 'local/05_Bloom and Wither 11_Hee-ang Kim.959ee145.jpg',
-  '{"thumbnail": "/images/artworks/05_Bloom and Wither 11_Hee-ang Kim.959ee145.jpg", "medium": "/images/artworks/05_Bloom and Wither 11_Hee-ang Kim.959ee145.jpg", "large": "/images/artworks/05_Bloom and Wither 11_Hee-ang Kim.959ee145.jpg", "blur": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAFCAYAAABirU3bAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAP0lEQVR4nGNgYPj/n4EBCBgZGf8zMDL+Z2Bk/M/AxPCfgZHhPwMjE8N/BkYmhv8MTMwMIJaAJIAsAUkAAQYAVKoMY1l8tycAAAAASUVORK5CYII="}'::jsonb,
+SELECT gen_random_uuid(), id, 'local/05_Bloom and Wither 9_Hee-ang Kim.c047198d.jpg',
+  '{"thumbnail": "/images/artworks/05_Bloom and Wither 9_Hee-ang Kim.c047198d.jpg", "medium": "/images/artworks/05_Bloom and Wither 9_Hee-ang Kim.c047198d.jpg", "large": "/images/artworks/05_Bloom and Wither 9_Hee-ang Kim.c047198d.jpg", "blur": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAFCAYAAABirU3bAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAP0lEQVR4nGNgYPj/n4EBCBgZGf8zMDL+Z2Bk/M/AxPCfgZHhPwMjE8N/BkYmhv8MTMwMIJaAJIAsAUkAAQYAVKoMY1l8tycAAAAASUVORK5CYII="}'::jsonb,
   '피고 지다 9 Bloom and Wither 9', '9 Bloom and Wither 9', 0
 FROM new_product;
 
@@ -146,8 +146,8 @@ WITH new_product AS (
   RETURNING id
 )
 INSERT INTO images (id, product_id, r2_key, variants, alt_ko, alt_en, sort_order)
-SELECT gen_random_uuid(), id, 'local/03_Blooming 3_Hee-ang Kim.bfd967ef.jpg',
-  '{"thumbnail": "/images/artworks/03_Blooming 3_Hee-ang Kim.bfd967ef.jpg", "medium": "/images/artworks/03_Blooming 3_Hee-ang Kim.bfd967ef.jpg", "large": "/images/artworks/03_Blooming 3_Hee-ang Kim.bfd967ef.jpg", "blur": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAFCAYAAABirU3bAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAP0lEQVR4nGNgYPj/n4EBCBgZGf8zMDL+Z2Bk/M/AxPCfgZHhPwMjE8N/BkYmhv8MTMwMIJaAJIAsAUkAAQYAVKoMY1l8tycAAAAASUVORK5CYII="}'::jsonb,
+SELECT gen_random_uuid(), id, 'local/05_Blooming 7_Hee-ang Kim.40018bdc.jpg',
+  '{"thumbnail": "/images/artworks/05_Blooming 7_Hee-ang Kim.40018bdc.jpg", "medium": "/images/artworks/05_Blooming 7_Hee-ang Kim.40018bdc.jpg", "large": "/images/artworks/05_Blooming 7_Hee-ang Kim.40018bdc.jpg", "blur": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAFCAYAAABirU3bAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAP0lEQVR4nGNgYPj/n4EBCBgZGf8zMDL+Z2Bk/M/AxPCfgZHhPwMjE8N/BkYmhv8MTMwMIJaAJIAsAUkAAQYAVKoMY1l8tycAAAAASUVORK5CYII="}'::jsonb,
   '피어나다 7 Blooming 7', '7 Blooming 7', 0
 FROM new_product;
 
@@ -158,8 +158,8 @@ WITH new_product AS (
   RETURNING id
 )
 INSERT INTO images (id, product_id, r2_key, variants, alt_ko, alt_en, sort_order)
-SELECT gen_random_uuid(), id, 'local/01_Re-form-4_Hee-ang-Kim.c0046ff6.jpg',
-  '{"thumbnail": "/images/artworks/01_Re-form-4_Hee-ang-Kim.c0046ff6.jpg", "medium": "/images/artworks/01_Re-form-4_Hee-ang-Kim.c0046ff6.jpg", "large": "/images/artworks/01_Re-form-4_Hee-ang-Kim.c0046ff6.jpg", "blur": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAFCAYAAABirU3bAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAP0lEQVR4nGNgYPj/n4EBCBgZGf8zMDL+Z2Bk/M/AxPCfgZHhPwMjE8N/BkYmhv8MTMwMIJaAJIAsAUkAAQYAVKoMY1l8tycAAAAASUVORK5CYII="}'::jsonb,
+SELECT gen_random_uuid(), id, 'local/05_Heart brooch_Hee-ang Kim.7cc067bb.jpg',
+  '{"thumbnail": "/images/artworks/05_Heart brooch_Hee-ang Kim.7cc067bb.jpg", "medium": "/images/artworks/05_Heart brooch_Hee-ang Kim.7cc067bb.jpg", "large": "/images/artworks/05_Heart brooch_Hee-ang Kim.7cc067bb.jpg", "blur": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAFCAYAAABirU3bAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAP0lEQVR4nGNgYPj/n4EBCBgZGf8zMDL+Z2Bk/M/AxPCfgZHhPwMjE8N/BkYmhv8MTMwMIJaAJIAsAUkAAQYAVKoMY1l8tycAAAAASUVORK5CYII="}'::jsonb,
   '재구성된 형태 2 Re-form 2', '2 Re-form 2', 0
 FROM new_product;
 
@@ -182,8 +182,8 @@ WITH new_product AS (
   RETURNING id
 )
 INSERT INTO images (id, product_id, r2_key, variants, alt_ko, alt_en, sort_order)
-SELECT gen_random_uuid(), id, 'local/01_Re-form-4_Hee-ang-Kim.c0046ff6.jpg',
-  '{"thumbnail": "/images/artworks/01_Re-form-4_Hee-ang-Kim.c0046ff6.jpg", "medium": "/images/artworks/01_Re-form-4_Hee-ang-Kim.c0046ff6.jpg", "large": "/images/artworks/01_Re-form-4_Hee-ang-Kim.c0046ff6.jpg", "blur": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAFCAYAAABirU3bAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAP0lEQVR4nGNgYPj/n4EBCBgZGf8zMDL+Z2Bk/M/AxPCfgZHhPwMjE8N/BkYmhv8MTMwMIJaAJIAsAUkAAQYAVKoMY1l8tycAAAAASUVORK5CYII="}'::jsonb,
+SELECT gen_random_uuid(), id, 'local/05_Re-form 1 _Hee-ang Kim.4315a2c0.jpg',
+  '{"thumbnail": "/images/artworks/05_Re-form 1 _Hee-ang Kim.4315a2c0.jpg", "medium": "/images/artworks/05_Re-form 1 _Hee-ang Kim.4315a2c0.jpg", "large": "/images/artworks/05_Re-form 1 _Hee-ang Kim.4315a2c0.jpg", "blur": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAFCAYAAABirU3bAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAP0lEQVR4nGNgYPj/n4EBCBgZGf8zMDL+Z2Bk/M/AxPCfgZHhPwMjE8N/BkYmhv8MTMwMIJaAJIAsAUkAAQYAVKoMY1l8tycAAAAASUVORK5CYII="}'::jsonb,
   '재구성된 형태 1 Re-form 1', '1 Re-form 1', 0
 FROM new_product;
 
@@ -206,8 +206,8 @@ WITH new_product AS (
   RETURNING id
 )
 INSERT INTO images (id, product_id, r2_key, variants, alt_ko, alt_en, sort_order)
-SELECT gen_random_uuid(), id, 'local/01_Re-form-4_Hee-ang-Kim.c0046ff6.jpg',
-  '{"thumbnail": "/images/artworks/01_Re-form-4_Hee-ang-Kim.c0046ff6.jpg", "medium": "/images/artworks/01_Re-form-4_Hee-ang-Kim.c0046ff6.jpg", "large": "/images/artworks/01_Re-form-4_Hee-ang-Kim.c0046ff6.jpg", "blur": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAFCAYAAABirU3bAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAP0lEQVR4nGNgYPj/n4EBCBgZGf8zMDL+Z2Bk/M/AxPCfgZHhPwMjE8N/BkYmhv8MTMwMIJaAJIAsAUkAAQYAVKoMY1l8tycAAAAASUVORK5CYII="}'::jsonb,
+SELECT gen_random_uuid(), id, 'local/02_Re-form 5_Hee-ang Kim.bfb592bb.jpg',
+  '{"thumbnail": "/images/artworks/02_Re-form 5_Hee-ang Kim.bfb592bb.jpg", "medium": "/images/artworks/02_Re-form 5_Hee-ang Kim.bfb592bb.jpg", "large": "/images/artworks/02_Re-form 5_Hee-ang Kim.bfb592bb.jpg", "blur": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAFCAYAAABirU3bAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAP0lEQVR4nGNgYPj/n4EBCBgZGf8zMDL+Z2Bk/M/AxPCfgZHhPwMjE8N/BkYmhv8MTMwMIJaAJIAsAUkAAQYAVKoMY1l8tycAAAAASUVORK5CYII="}'::jsonb,
   '재구성된 형태 5 Re-form 5', '5 Re-form 5', 0
 FROM new_product;
 
@@ -230,8 +230,8 @@ WITH new_product AS (
   RETURNING id
 )
 INSERT INTO images (id, product_id, r2_key, variants, alt_ko, alt_en, sort_order)
-SELECT gen_random_uuid(), id, 'local/01_Cluster-17_Hee-ang-Kim.4eedce99.jpg',
-  '{"thumbnail": "/images/artworks/01_Cluster-17_Hee-ang-Kim.4eedce99.jpg", "medium": "/images/artworks/01_Cluster-17_Hee-ang-Kim.4eedce99.jpg", "large": "/images/artworks/01_Cluster-17_Hee-ang-Kim.4eedce99.jpg", "blur": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAFCAYAAABirU3bAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAP0lEQVR4nGNgYPj/n4EBCBgZGf8zMDL+Z2Bk/M/AxPCfgZHhPwMjE8N/BkYmhv8MTMwMIJaAJIAsAUkAAQYAVKoMY1l8tycAAAAASUVORK5CYII="}'::jsonb,
+SELECT gen_random_uuid(), id, 'local/01_Cluster-9_Hee-ang-Kim.b7e5c368.jpg',
+  '{"thumbnail": "/images/artworks/01_Cluster-9_Hee-ang-Kim.b7e5c368.jpg", "medium": "/images/artworks/01_Cluster-9_Hee-ang-Kim.b7e5c368.jpg", "large": "/images/artworks/01_Cluster-9_Hee-ang-Kim.b7e5c368.jpg", "blur": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAFCAYAAABirU3bAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAP0lEQVR4nGNgYPj/n4EBCBgZGf8zMDL+Z2Bk/M/AxPCfgZHhPwMjE8N/BkYmhv8MTMwMIJaAJIAsAUkAAQYAVKoMY1l8tycAAAAASUVORK5CYII="}'::jsonb,
   '군집 9 Cluster 9', '9 Cluster 9', 0
 FROM new_product;
 
@@ -266,8 +266,8 @@ WITH new_product AS (
   RETURNING id
 )
 INSERT INTO images (id, product_id, r2_key, variants, alt_ko, alt_en, sort_order)
-SELECT gen_random_uuid(), id, 'local/01_Cluster-17_Hee-ang-Kim.4eedce99.jpg',
-  '{"thumbnail": "/images/artworks/01_Cluster-17_Hee-ang-Kim.4eedce99.jpg", "medium": "/images/artworks/01_Cluster-17_Hee-ang-Kim.4eedce99.jpg", "large": "/images/artworks/01_Cluster-17_Hee-ang-Kim.4eedce99.jpg", "blur": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAFCAYAAABirU3bAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAP0lEQVR4nGNgYPj/n4EBCBgZGf8zMDL+Z2Bk/M/AxPCfgZHhPwMjE8N/BkYmhv8MTMwMIJaAJIAsAUkAAQYAVKoMY1l8tycAAAAASUVORK5CYII="}'::jsonb,
+SELECT gen_random_uuid(), id, 'local/03_Cluster E_BB1.b2eb00a7.jpg',
+  '{"thumbnail": "/images/artworks/03_Cluster E_BB1.b2eb00a7.jpg", "medium": "/images/artworks/03_Cluster E_BB1.b2eb00a7.jpg", "large": "/images/artworks/03_Cluster E_BB1.b2eb00a7.jpg", "blur": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAFCAYAAABirU3bAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAP0lEQVR4nGNgYPj/n4EBCBgZGf8zMDL+Z2Bk/M/AxPCfgZHhPwMjE8N/BkYmhv8MTMwMIJaAJIAsAUkAAQYAVKoMY1l8tycAAAAASUVORK5CYII="}'::jsonb,
   'Cluster E', 'Cluster E', 0
 FROM new_product;
 
@@ -302,8 +302,8 @@ WITH new_product AS (
   RETURNING id
 )
 INSERT INTO images (id, product_id, r2_key, variants, alt_ko, alt_en, sort_order)
-SELECT gen_random_uuid(), id, 'local/03_Blooming 3_Hee-ang Kim.bfd967ef.jpg',
-  '{"thumbnail": "/images/artworks/03_Blooming 3_Hee-ang Kim.bfd967ef.jpg", "medium": "/images/artworks/03_Blooming 3_Hee-ang Kim.bfd967ef.jpg", "large": "/images/artworks/03_Blooming 3_Hee-ang Kim.bfd967ef.jpg", "blur": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAFCAYAAABirU3bAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAP0lEQVR4nGNgYPj/n4EBCBgZGf8zMDL+Z2Bk/M/AxPCfgZHhPwMjE8N/BkYmhv8MTMwMIJaAJIAsAUkAAQYAVKoMY1l8tycAAAAASUVORK5CYII="}'::jsonb,
+SELECT gen_random_uuid(), id, 'local/03_Blooming2_Hee-ang Kim.d19edc60.jpg',
+  '{"thumbnail": "/images/artworks/03_Blooming2_Hee-ang Kim.d19edc60.jpg", "medium": "/images/artworks/03_Blooming2_Hee-ang Kim.d19edc60.jpg", "large": "/images/artworks/03_Blooming2_Hee-ang Kim.d19edc60.jpg", "blur": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAFCAYAAABirU3bAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAP0lEQVR4nGNgYPj/n4EBCBgZGf8zMDL+Z2Bk/M/AxPCfgZHhPwMjE8N/BkYmhv8MTMwMIJaAJIAsAUkAAQYAVKoMY1l8tycAAAAASUVORK5CYII="}'::jsonb,
   'Blooming 2', 'Blooming 2', 0
 FROM new_product;
 
@@ -314,8 +314,8 @@ WITH new_product AS (
   RETURNING id
 )
 INSERT INTO images (id, product_id, r2_key, variants, alt_ko, alt_en, sort_order)
-SELECT gen_random_uuid(), id, 'local/03_M Pin 3,4.7a93563b.jpeg',
-  '{"thumbnail": "/images/artworks/03_M Pin 3,4.7a93563b.jpeg", "medium": "/images/artworks/03_M Pin 3,4.7a93563b.jpeg", "large": "/images/artworks/03_M Pin 3,4.7a93563b.jpeg", "blur": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAFCAYAAABirU3bAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAP0lEQVR4nGNgYPj/n4EBCBgZGf8zMDL+Z2Bk/M/AxPCfgZHhPwMjE8N/BkYmhv8MTMwMIJaAJIAsAUkAAQYAVKoMY1l8tycAAAAASUVORK5CYII="}'::jsonb,
+SELECT gen_random_uuid(), id, 'local/04_Wavy-4_2-Hee-ang-Kim.5c1e08cf.jpg',
+  '{"thumbnail": "/images/artworks/04_Wavy-4_2-Hee-ang-Kim.5c1e08cf.jpg", "medium": "/images/artworks/04_Wavy-4_2-Hee-ang-Kim.5c1e08cf.jpg", "large": "/images/artworks/04_Wavy-4_2-Hee-ang-Kim.5c1e08cf.jpg", "blur": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAFCAYAAABirU3bAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAP0lEQVR4nGNgYPj/n4EBCBgZGf8zMDL+Z2Bk/M/AxPCfgZHhPwMjE8N/BkYmhv8MTMwMIJaAJIAsAUkAAQYAVKoMY1l8tycAAAAASUVORK5CYII="}'::jsonb,
   'M pin 3', 'M pin 3', 0
 FROM new_product;
 
