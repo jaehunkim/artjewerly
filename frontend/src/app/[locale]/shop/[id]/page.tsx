@@ -6,7 +6,7 @@ import { buildProductMetadata } from '@/lib/product-metadata';
 import { ProductDetail } from '@/components/product/ProductDetail';
 import { PageTransition } from '@/components/ui/PageTransition';
 
-export const revalidate = 300;
+export const dynamic = 'force-dynamic';
 
 export async function generateMetadata({
   params,
@@ -19,16 +19,6 @@ export async function generateMetadata({
 
 interface ShopDetailPageProps {
   params: Promise<{ locale: string; id: string }>;
-}
-
-export async function generateStaticParams() {
-  try {
-    const products = await fetchProducts('sale');
-    return products.map((p) => ({ id: p.id }));
-  } catch (e) {
-    console.warn('[heeang] API fallback:', e);
-    return mockShopProducts.map((p) => ({ id: p.id }));
-  }
 }
 
 export default async function ShopDetailPage({ params }: ShopDetailPageProps) {
